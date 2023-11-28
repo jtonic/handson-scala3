@@ -1,0 +1,20 @@
+## Scala
+.bsp/
+.metals/
+.scala-build/
+.bloop/
+
+## Gradle
+.gradle/*
+!gradle/wrapper/
+build/
+
+## Maven
+target/
+
+
+## VS code
+.vscode/
+
+## IJ Idea
+.idea/
