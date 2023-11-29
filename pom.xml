@@ -17,13 +17,17 @@
     <scala.compat.version>3</scala.compat.version>
     <scala.library.version>${scala.version}</scala.library.version>
     <os.lib.version>0.9.2</os.lib.version>
+    <cats.core.version>2.10.0</cats.core.version>
+    <cats.effect.version>3.5.2</cats.effect.version>
+    <circe.version>0.14.6</circe.version>
+    <log4cats-slf4j.version>2.6.0</log4cats-slf4j.version>
+
     <junit.version>4.13.2</junit.version>
     <scalatest.version>3.2.17</scalatest.version>
     <scalatestplus.version>3.2.17.0</scalatestplus.version>
     <specs2.version>5.4.0</specs2.version>
+
     <scala.maven.plugin.version>4.8.1</scala.maven.plugin.version>
-    <cats.effect.version>3.5.2</cats.effect.version>
-    <cats.core.version>2.10.0</cats.core.version>
   </properties>
 
   <dependencies>
@@ -44,6 +48,7 @@
       </exclusions>
     </dependency>
 
+    <!-- scala cats -->
     <dependency>
       <groupId>org.typelevel</groupId>
       <artifactId>cats-core_${scala.compat.version}</artifactId>
@@ -53,6 +58,33 @@
       <groupId>org.typelevel</groupId>
       <artifactId>cats-effect_3</artifactId>
       <version>${cats.effect.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.typelevel</groupId>
+      <artifactId>log4cats-slf4j_3</artifactId>
+      <version>${log4cats-slf4j.version}</version>
+    </dependency>
+
+    <!-- http4s -->
+    <dependency>
+      <groupId>org.http4s</groupId>
+      <artifactId>http4s-blaze-server_3</artifactId>
+      <version>1.0.0-M39</version>
+    </dependency>
+    <dependency>
+      <groupId>org.http4s</groupId>
+      <artifactId>http4s-dsl_3</artifactId>
+      <version>1.0.0-M40</version>
+    </dependency>
+    <dependency>
+      <groupId>org.http4s</groupId>
+      <artifactId>http4s-circe_3</artifactId>
+      <version>1.0.0-M40</version>
+    </dependency>
+    <dependency>
+      <groupId>io.circe</groupId>
+      <artifactId>circe-generic_3</artifactId>
+      <version>${circe.version}</version>
     </dependency>
 
     <!-- Test -->
@@ -99,6 +131,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <sourceDirectory>src/main/scala</sourceDirectory>
     <testSourceDirectory>src/test/scala</testSourceDirectory>
@@ -160,7 +193,7 @@
               <goal>java</goal>
             </goals>
             <configuration>
-              <mainClass>ro.jtonic.handson.scala3.CatsApp</mainClass>
+              <mainClass>ro.jtonic.handson.scala3.Http4sService</mainClass>
             </configuration>
           </execution>
         </executions>
