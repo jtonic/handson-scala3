@@ -10,7 +10,8 @@
 - [x] simple cats-effects example
 - [x] simple http4s endpoint with cats effect example
 - [ ] http4s endpoint example
-  - [ ] with JSON return type
+  - [x] with JSON return type
+  - [ ] with a collection of items
   - [ ] path param
   - [ ] query params
 - [ ] slf4j logging
@@ -19,3 +20,9 @@
 - [ ] simple database example
 - [ ] certificates and HTTPs
 - [ ] integrate the application into a sidecare
+
+
+## Theory
+
+- What is Kleisli from http4s routes PoV
+- What is partial function (in the context of http4s endpoints definitions)
