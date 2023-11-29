@@ -27,3 +27,5 @@
 
 - What is Kleisli from http4s routes PoV
 - What is partial function (in the context of http4s endpoints definitions)
+- unapply method (applicability)
+- more about semigroup - in the context of HttpRoutes
