@@ -22,6 +22,8 @@
     <scalatestplus.version>3.2.17.0</scalatestplus.version>
     <specs2.version>5.4.0</specs2.version>
     <scala.maven.plugin.version>4.8.1</scala.maven.plugin.version>
+    <cats.effect.version>3.5.2</cats.effect.version>
+    <cats.core.version>2.10.0</cats.core.version>
   </properties>
 
   <dependencies>
@@ -40,6 +42,17 @@
           <artifactId>scala3-library_${scala.compat.version}</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.typelevel</groupId>
+      <artifactId>cats-core_${scala.compat.version}</artifactId>
+      <version>${cats.core.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.typelevel</groupId>
+      <artifactId>cats-effect_3</artifactId>
+      <version>${cats.effect.version}</version>
     </dependency>
 
     <!-- Test -->
@@ -86,7 +99,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
   <build>
     <sourceDirectory>src/main/scala</sourceDirectory>
     <testSourceDirectory>src/test/scala</testSourceDirectory>
@@ -144,12 +156,11 @@
         <executions>
           <execution>
             <id>run-app</id>
-            <phase>test</phase>
             <goals>
               <goal>java</goal>
             </goals>
             <configuration>
-              <mainClass>ro.jtonic.handson.scala3.App</mainClass>
+              <mainClass>ro.jtonic.handson.scala3.CatsApp</mainClass>
             </configuration>
           </execution>
         </executions>
