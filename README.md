@@ -9,11 +9,12 @@
 - [x] mvn configuration
 - [x] simple cats-effects example
 - [x] simple http4s endpoint with cats effect example
-- [ ] http4s endpoint example
+- [ ] http4s endpoint example (GET)
   - [x] with JSON return type
-  - [ ] with a collection of items
+  - [x] with a collection of items
+  - [x] query params
   - [ ] path param
-  - [ ] query params
+- [ ] http4s endpoint example (POST)
 - [ ] slf4j logging
 - [ ] simple http4s HTTP client example with cats effect example
 - [ ] simple configuration

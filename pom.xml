@@ -193,7 +193,7 @@
               <goal>java</goal>
             </goals>
             <configuration>
-              <mainClass>ro.jtonic.handson.scala3.Http4sService</mainClass>
+              <mainClass>ro.jtonic.handson.scala3.hollywood.app.HollywoodApp</mainClass>
             </configuration>
           </execution>
         </executions>
