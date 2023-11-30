@@ -87,6 +87,19 @@
       <version>${circe.version}</version>
     </dependency>
 
+    <!-- slick DB -->
+    <dependency>
+      <groupId>com.typesafe.slick</groupId>
+      <artifactId>slick_3</artifactId>
+      <version>3.5.0-M5</version>
+    </dependency>
+    <dependency>
+      <groupId>com.typesafe.slick</groupId>
+      <artifactId>slick-hikaricp_3</artifactId>
+      <version>3.5.0-M5</version>
+    </dependency>
+
+
     <!-- Test -->
     <dependency>
       <groupId>junit</groupId>

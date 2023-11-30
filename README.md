@@ -22,6 +22,24 @@
 - [ ] certificates and HTTPs
 - [ ] integrate the application into a sidecare
 
+## Application
+
+- build and run the application
+
+> mvn clean install exec:java#run-app
+
+- test the application
+
+  ```shell
+
+  http "localhost:8080/keepalive"
+
+  http "localhost:8080/movies?actor=Brad%20Pitt"
+
+  http "localhost:8080/actor?actor=Brad%20Pitt"
+
+  ```
+
 
 ## Theory
 
