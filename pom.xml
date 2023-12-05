@@ -59,11 +59,6 @@
       <artifactId>cats-effect_3</artifactId>
       <version>${cats.effect.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.typelevel</groupId>
-      <artifactId>log4cats-slf4j_3</artifactId>
-      <version>${log4cats-slf4j.version}</version>
-    </dependency>
 
     <!-- http4s -->
     <dependency>
@@ -104,6 +99,17 @@
       <version>42.7.0</version>
     </dependency>
 
+    <!-- logging -->
+    <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.4.14</version>
+    </dependency>
+    <dependency>
+      <groupId>org.typelevel</groupId>
+      <artifactId>log4cats-slf4j_3</artifactId>
+      <version>${log4cats-slf4j.version}</version>
+    </dependency>
 
     <!-- Test -->
     <dependency>

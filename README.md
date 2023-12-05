@@ -16,7 +16,7 @@
   - [ ] path param
 - [ ] http4s endpoint example (POST)
 - [x] slick, postgres, cats effects
-- [ ] slf4j logging
+- [x] slf4j/logback/cats-slf4j logging
 - [ ] simple http4s HTTP client example with cats effect example
 - [ ] simple configuration
 - [ ] simple database example

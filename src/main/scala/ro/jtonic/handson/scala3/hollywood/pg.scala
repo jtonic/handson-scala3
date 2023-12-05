@@ -8,6 +8,11 @@ import scala.util.Success
 import scala.util.Failure
 import scala.concurrent.ExecutionContextExecutor
 import os.read
+import org.typelevel.log4cats.slf4j.Slf4jLogger
+import org.typelevel.log4cats.Logger
+import cats.effect.unsafe.implicits.global
+
+implicit val logger: Logger[IO] = Slf4jLogger.getLogger[IO]
 
 package DbExecutionContext:
   implicit val ec: ExecutionContextExecutor = scala.concurrent.ExecutionContext.global
@@ -47,7 +52,7 @@ package DbOperations:
     import DbConnection._
     import DbExecutionContext._
 
-    println("Reading all movies...")
+    logger.info("Reading all movies...")
     db.run(movieTable.result)
 
   def insertMovies(): Future[Option[Int]] =
@@ -63,7 +68,7 @@ package DbOperations:
     val troy = Movie(name = "Troy", LocalDate.of(2004, 5, 14), 163)
     val movies = Seq(godFather, matrix, matrixReloaded, matrixRevolutions, troy)
 
-    println(s"Inserting movies: ${movies}...")
+    logger.info(s"Inserting movies: ${movies}...").unsafeToFuture()
     val insertQuery = DbTables.movieTable ++= movies
     db.run(insertQuery)
 
@@ -73,7 +78,7 @@ package DbOperations:
     import DbConnection._
     import DbExecutionContext._
 
-    println(s"Finding movie by name: ${name}...")
+    logger.info(s"Finding movie by name: ${name}...").unsafeToFuture()
     val query = movieTable.filter(_.name === name)
     db.run(query.result)
 
@@ -82,7 +87,7 @@ package DbOperations:
     import DbConnection._
     import DbExecutionContext._
 
-    println(s"Finding movie by partial name: ${partialName} ...")
+    logger.info(s"Finding movie by partial name: ${partialName} ...").unsafeToFuture()
     val query = movieTable.filter(_.name like s"%${partialName}%")
     db.run(query.result)
 
@@ -92,7 +97,7 @@ package DbOperations:
     import DbConnection._
     import DbExecutionContext._
 
-    println(s"Deleting movie by name: ${name}...")
+    logger.info(s"Deleting movie by name: ${name}...")
     val query = movieTable.filter(_.name === name)
     db.run(query.delete)
 
@@ -101,7 +106,7 @@ package DbOperations:
     import DbConnection._
     import DbExecutionContext._
 
-    println(s"Deleting all movies...")
+    logger.info(s"Deleting all movies...").unsafeToFuture()
     db.run(DbTables.movieTable.delete)
 
 import cats.effect.{IOApp, IO}
@@ -116,16 +121,16 @@ object DbApp extends IOApp.Simple:
     import concurrent.duration.DurationInt
 
     for {
-      _ <- IO(println("Start..."))
+      _ <- logger.info("Start...")
       _ <- IO.fromFuture(IO(deleteAllMovies()))
-      _ <- IO(println(s"All movies were deleted!"))
+      _ <- logger.info(s"All movies were deleted!")
       insertedMovies <- IO.fromFuture(IO(insertMovies()))
-      _ <- IO(println(s"Movies were inserted! Inserted movies: $insertedMovies"))
+      _ <- logger.info(s"Movies were inserted! Inserted movies: $insertedMovies")
       matrixMovies <- IO.fromFuture(IO(findMovieByPartialName("Matrix")))
-      _ <- IO(println(s"Matrix movies: ${matrixMovies.mkString(", ")}"))
+      _ <- logger.info(s"Matrix movies: ${matrixMovies.mkString(", ")}")
       allMovies <- IO.fromFuture(IO(getAllMovies()))
-      _ <- IO(println(s"All movies: ${allMovies.mkString(", ")}"))
-      _ <- IO(println("Closing the db connection..."))
+      _ <- logger.info(s"All movies: ${allMovies.mkString(", ")}")
+      _ <- logger.info("Closing the db connection...")
       _ <- closeDbConnection()
-      _ <- IO(println("Finished!"))
+      _ <- logger.info("Finished!")
     } yield ()
