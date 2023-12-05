@@ -214,6 +214,15 @@
               <mainClass>ro.jtonic.handson.scala3.hollywood.app.HollywoodApp</mainClass>
             </configuration>
           </execution>
+          <execution>
+            <id>run-slick</id>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>ro.jtonic.handson.scala3.hollywood.DbApp</mainClass>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>

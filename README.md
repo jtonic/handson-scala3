@@ -15,6 +15,7 @@
   - [x] query params
   - [ ] path param
 - [ ] http4s endpoint example (POST)
+- [x] slick, postgres, cats effects
 - [ ] slf4j logging
 - [ ] simple http4s HTTP client example with cats effect example
 - [ ] simple configuration
@@ -22,7 +23,10 @@
 - [ ] certificates and HTTPs
 - [ ] integrate the application into a sidecare
 
-## Application
+## Applications
+
+
+### App One (REST endpoints)
 
 - build and run the application
 
@@ -39,6 +43,15 @@
   http "localhost:8080/actor?actor=Brad%20Pitt"
 
   ```
+
+### App Two (slick + postgres + cats effects)
+
+- build and run the application
+
+> clean package exec:java@run-slick
+
+  **Notes**:
+    - Start docker-compose before
 
 
 ## Theory
