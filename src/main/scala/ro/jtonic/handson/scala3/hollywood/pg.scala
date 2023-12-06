@@ -130,13 +130,32 @@ package DbOperations:
 
 package DbPreconditions:
   import cats.effect.IO
+  import exceptions._
+  import cats.data.{ValidatedNec, ValidatedNel}
+  import cats.implicits._
 
-  def validate(a: Int): IO[Boolean] = IO(a > 0)
+  def validatePositive(a: Int): IO[Int] =
+    if a > 0 then IO.pure(a) else IO.raiseError(ValidationException(s"Value '$a' is not positive!"))
+
+  def validateNotBlank(a: String): ValidatedNel[String, String] =
+    if a.isBlank() then s"Value '$a' is empty".invalidNel else a.validNel
+
+  def validatedInput(input: Set[String]): IO[Set[String]] =
+    input.toList.traverse(validateNotBlank).map(_.toSet).toEither match
+      case Left(errors) =>
+        IO.raiseError(
+          ValidationException(s"Invalid input: ${errors.toNonEmptyList.toList.mkString(", ")}")
+        )
+      case Right(validatedInput) => IO.pure(validatedInput)
+
 
 package fp:
 
   extension [F[_], A](fa: F[A])
+    // flatMap
     def >>-[B](f: A => F[B])(using F: cats.FlatMap[F]): F[B] = F.flatMap(fa)(f)
+    // flatTap
+    def >>>-[B](f: A => F[B])(using F: cats.FlatMap[F]): F[A] = F.flatTap(fa)(f)
 
 // Consider this
 // https://http4s.org/v1/docs/dsl.html#handling-query-parameters
@@ -159,8 +178,8 @@ object DbApp extends IOApp.Simple:
         _ <- logger.info("Start...")
 
         // validate the input
-        isValidationOk <- logger.info("Validating the input...") *> validate(10)
-        _ <- if isValidationOk then IO.unit else IO.raiseError(ValidationException("Validation failed!"))
+        inputInt <- validatePositive(10) >>>- { input => logger.info(s"Input $input!") }
+        _ <- validatedInput(Set("Irina", "Tony", "Roxana"))
 
         //delete all movies
         _ <- IO.fromFuture(IO(deleteAllMovies())) <* logger.info(s"All movies were deleted!")
@@ -175,7 +194,7 @@ object DbApp extends IOApp.Simple:
 
         // find all movies
         allMovies <- IO.fromFuture(IO(getAllMovies())) >>- { movies =>
-          if movies.size < 10 then
+          if movies.size < 5 then
             IO.raiseError(ValidationException("There are less than 10 movies in db!"))
           else IO.pure(movies)
         }

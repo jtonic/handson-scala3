@@ -10,7 +10,7 @@
 - [x] simple cats-effects example
 - [x] simple http4s endpoint with cats effect example
 - [x] handle errors
-- [ ] handle accumulated errors
+- [x] handle accumulated errors
 - [ ] http4s endpoint example (GET)
   - [x] with JSON return type
   - [x] with a collection of items
