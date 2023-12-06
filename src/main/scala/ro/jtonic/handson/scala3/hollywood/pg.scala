@@ -155,39 +155,37 @@ object DbApp extends IOApp.Simple:
     import DbOperations._
     import concurrent.duration.DurationInt
 
-    for {
-      result <- (
-        for {
-          _ <- logger.info("Start...")
+    val program: IO[Unit] = for {
+        _ <- logger.info("Start...")
 
-          isValidationOk <- logger.info("Validating the input...") *> validate(10)
-          _ <- if isValidationOk then IO.unit else IO.raiseError(ValidationException("Validation failed!"))
+        // validate the input
+        isValidationOk <- logger.info("Validating the input...") *> validate(10)
+        _ <- if isValidationOk then IO.unit else IO.raiseError(ValidationException("Validation failed!"))
 
-          _ <- IO.fromFuture(IO(deleteAllMovies())) <* logger.info(s"All movies were deleted!")
+        //delete all movies
+        _ <- IO.fromFuture(IO(deleteAllMovies())) <* logger.info(s"All movies were deleted!")
 
-          _ <- IO.fromFuture(IO(insertMovies())) >>- { insertedMovies => logger.info(s"Movies were inserted! Inserted movies: ${insertedMovies}") }
+        // insert movies
+        _ <- IO.fromFuture(IO(insertMovies())) >>- { insertedMovies => logger.info(s"Movies were inserted! Inserted movies: ${insertedMovies}") }
 
-          matrixMovies <- IO.fromFuture(IO(findMovieByPartialName("Matrix")))
-          _ <- if matrixMovies.size != 4 then IO.raiseError(ValidationException("There are 5 parts in Matrix series!")) else IO.unit
-          _ <- logger.info(s"Matrix movies: ${matrixMovies.mkString(", ")}")
+        // find movies by name
+        matrixMovies <- IO.fromFuture(IO(findMovieByPartialName("Matrix")))
+        _ <- if matrixMovies.size != 4 then IO.raiseError(ValidationException("There are 5 parts in Matrix series!")) else IO.unit
+        _ <- logger.info(s"Matrix movies: ${matrixMovies.mkString(", ")}")
 
-          allMovies <- IO.fromFuture(IO(getAllMovies())) >>- { movies =>
-            if movies.size < 10 then
-              IO.raiseError(ValidationException("There are less than 10 movies in db!"))
-            else IO.pure(movies)
-          }
-          _ <- logger.info(s"All movies: ${allMovies.mkString(", ")}")
+        // find all movies
+        allMovies <- IO.fromFuture(IO(getAllMovies())) >>- { movies =>
+          if movies.size < 10 then
+            IO.raiseError(ValidationException("There are less than 10 movies in db!"))
+          else IO.pure(movies)
+        }
+        _ <- logger.info(s"All movies: ${allMovies.mkString(", ")}")
 
-          _ <- logger.info("Closing the db connection...")
-          _ <- closeDbConnection()
+        // close the db connection
+        _ <- logger.info("Closing the db connection...")
+        _ <- closeDbConnection()
 
-          _ <- logger.info("Finished!")
-        } yield ()
-      ).attempt
-    } yield result match
-      case Left(e)  => {
-        logger.error(e)(s"An error occurred: ${e.getMessage}").unsafeRunAndForget()
-      }
-      case Right(_) => {
-        logger.info("Success!").unsafeRunAndForget()
-      }
+        _ <- logger.info("Finished!")
+      } yield ()
+
+      program.handleError(e => logger.error(e)(s"An error occurred: ${e.getMessage}").unsafeRunAndForget())
