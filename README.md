@@ -21,9 +21,9 @@
 - [x] slf4j/logback/cats-slf4j logging
 - [ ] simple http4s HTTP client example with cats effect example
 - [ ] simple configuration
-- [ ] simple database example
+- [x] simple database example
 - [ ] certificates and HTTPs
-- [ ] integrate the application into a sidecare
+- [ ] integrate the application into a sidecar
 
 ## Applications
 

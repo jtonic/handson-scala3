@@ -178,14 +178,14 @@ object DbApp extends IOApp.Simple:
         _ <- logger.info("Start...")
 
         // validate the input
-        inputInt <- validatePositive(10) >>>- { input => logger.info(s"Input $input!") }
+        inputInt <- validatePositive(10) >>>- { it => logger.info(s"Input $it!") }
         _ <- validatedInput(Set("Irina", "Tony", "Roxana"))
 
         //delete all movies
-        _ <- IO.fromFuture(IO(deleteAllMovies())) <* logger.info(s"All movies were deleted!")
+        _ <- IO.fromFuture(IO(deleteAllMovies())) <* logger.info("All movies were deleted!")
 
         // insert movies
-        _ <- IO.fromFuture(IO(insertMovies())) >>- { insertedMovies => logger.info(s"Movies were inserted! Inserted movies: ${insertedMovies}") }
+        _ <- IO.fromFuture(IO(insertMovies())) >>- { it => logger.info(s"Movies were inserted! Inserted movies: $it") }
 
         // find movies by name
         matrixMovies <- IO.fromFuture(IO(findMovieByPartialName("Matrix")))
@@ -198,6 +198,7 @@ object DbApp extends IOApp.Simple:
             IO.raiseError(ValidationException("There are less than 10 movies in db!"))
           else IO.pure(movies)
         }
+
         _ <- logger.info(s"All movies: ${allMovies.mkString(", ")}")
 
         // close the db connection
