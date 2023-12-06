@@ -11,11 +11,17 @@ import os.read
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 import org.typelevel.log4cats.Logger
 import cats.effect.unsafe.implicits.global
+import cats.syntax.flatMap
 
 implicit val logger: Logger[IO] = Slf4jLogger.getLogger[IO]
 
+package exceptions:
+  final case class ValidationException(msg: String)
+      extends RuntimeException(msg)
+
 package DbExecutionContext:
-  implicit val ec: ExecutionContextExecutor = scala.concurrent.ExecutionContext.global
+  implicit val ec: ExecutionContextExecutor =
+    scala.concurrent.ExecutionContext.global
 
 package DbConnection:
   import cats.effect.IO
@@ -24,11 +30,11 @@ package DbConnection:
 
 package DbModel:
   final case class Movie(
-    id: Long = 0,
-    name: String,
-    releaseDate: LocalDate,
-    lengthInMin: Int
-    )
+      id: Long = 0,
+      name: String,
+      releaseDate: LocalDate,
+      lengthInMin: Int
+  )
 
 package DbTables:
   import DbModel._
@@ -43,7 +49,6 @@ package DbTables:
 
 package DbOperations:
   import DbModel._
-
 
   def getAllMovies(): Future[Seq[Movie]] =
     import slick.jdbc.PostgresProfile.api._
@@ -61,12 +66,24 @@ package DbOperations:
     import DbConnection._
     import DbExecutionContext._
 
-    val godFather = Movie(name = "The Godfather", LocalDate.of(1972, 3, 24), 175)
+    val godFather =
+      Movie(name = "The Godfather", LocalDate.of(1972, 3, 24), 175)
     val matrix = Movie(name = "The Matrix", LocalDate.of(1999, 3, 31), 136)
-    val matrixReloaded = Movie(name = "The Matrix Reloaded", LocalDate.of(2003, 5, 7), 138)
-    val matrixRevolutions = Movie(name = "The Matrix Revolutions", LocalDate.of(2003, 10, 27), 129)
+    val matrixReloaded =
+      Movie(name = "The Matrix Reloaded", LocalDate.of(2003, 5, 7), 138)
+    val matrixRevolutions =
+      Movie(name = "The Matrix Revolutions", LocalDate.of(2003, 10, 27), 129)
+    val matrixResurrections =
+      Movie(name = "The Matrix Resurrections", LocalDate.of(2021, 12, 22), 148)
     val troy = Movie(name = "Troy", LocalDate.of(2004, 5, 14), 163)
-    val movies = Seq(godFather, matrix, matrixReloaded, matrixRevolutions, troy)
+    val movies = Seq(
+      godFather,
+      matrix,
+      matrixReloaded,
+      matrixRevolutions,
+      matrixResurrections,
+      troy
+    )
 
     logger.info(s"Inserting movies: ${movies}...").unsafeToFuture()
     val insertQuery = DbTables.movieTable ++= movies
@@ -87,7 +104,9 @@ package DbOperations:
     import DbConnection._
     import DbExecutionContext._
 
-    logger.info(s"Finding movie by partial name: ${partialName} ...").unsafeToFuture()
+    logger
+      .info(s"Finding movie by partial name: ${partialName} ...")
+      .unsafeToFuture()
     val query = movieTable.filter(_.name like s"%${partialName}%")
     db.run(query.result)
 
@@ -109,28 +128,66 @@ package DbOperations:
     logger.info(s"Deleting all movies...").unsafeToFuture()
     db.run(DbTables.movieTable.delete)
 
+package DbPreconditions:
+  import cats.effect.IO
+
+  def validate(a: Int): IO[Boolean] = IO(a > 0)
+
+package fp:
+
+  extension [F[_], A](fa: F[A])
+    def >>-[B](f: A => F[B])(using F: cats.FlatMap[F]): F[B] = F.flatMap(fa)(f)
+
+// Consider this
+// https://http4s.org/v1/docs/dsl.html#handling-query-parameters
+
 import cats.effect.{IOApp, IO}
 
 object DbApp extends IOApp.Simple:
 
   override def run: IO[Unit] =
     import slick.jdbc.PostgresProfile.api._
+    import fp._
+    import exceptions._
+    import DbPreconditions._
     import DbConnection._
     import DbModel._
     import DbOperations._
     import concurrent.duration.DurationInt
 
     for {
-      _ <- logger.info("Start...")
-      _ <- IO.fromFuture(IO(deleteAllMovies()))
-      _ <- logger.info(s"All movies were deleted!")
-      insertedMovies <- IO.fromFuture(IO(insertMovies()))
-      _ <- logger.info(s"Movies were inserted! Inserted movies: $insertedMovies")
-      matrixMovies <- IO.fromFuture(IO(findMovieByPartialName("Matrix")))
-      _ <- logger.info(s"Matrix movies: ${matrixMovies.mkString(", ")}")
-      allMovies <- IO.fromFuture(IO(getAllMovies()))
-      _ <- logger.info(s"All movies: ${allMovies.mkString(", ")}")
-      _ <- logger.info("Closing the db connection...")
-      _ <- closeDbConnection()
-      _ <- logger.info("Finished!")
-    } yield ()
+      result <- (
+        for {
+          _ <- logger.info("Start...")
+
+          isValidationOk <- logger.info("Validating the input...") *> validate(10)
+          _ <- if isValidationOk then IO.unit else IO.raiseError(ValidationException("Validation failed!"))
+
+          _ <- IO.fromFuture(IO(deleteAllMovies())) <* logger.info(s"All movies were deleted!")
+
+          _ <- IO.fromFuture(IO(insertMovies())) >>- { insertedMovies => logger.info(s"Movies were inserted! Inserted movies: ${insertedMovies}") }
+
+          matrixMovies <- IO.fromFuture(IO(findMovieByPartialName("Matrix")))
+          _ <- if matrixMovies.size != 4 then IO.raiseError(ValidationException("There are 5 parts in Matrix series!")) else IO.unit
+          _ <- logger.info(s"Matrix movies: ${matrixMovies.mkString(", ")}")
+
+          allMovies <- IO.fromFuture(IO(getAllMovies())) >>- { movies =>
+            if movies.size < 10 then
+              IO.raiseError(ValidationException("There are less than 10 movies in db!"))
+            else IO.pure(movies)
+          }
+          _ <- logger.info(s"All movies: ${allMovies.mkString(", ")}")
+
+          _ <- logger.info("Closing the db connection...")
+          _ <- closeDbConnection()
+
+          _ <- logger.info("Finished!")
+        } yield ()
+      ).attempt
+    } yield result match
+      case Left(e)  => {
+        logger.error(e)(s"An error occurred: ${e.getMessage}").unsafeRunAndForget()
+      }
+      case Right(_) => {
+        logger.info("Success!").unsafeRunAndForget()
+      }
