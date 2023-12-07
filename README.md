@@ -21,8 +21,10 @@
 - [x] slf4j/logback/cats-slf4j logging
 - [ ] simple http4s HTTP client example with cats effect example
 - [x] configuration - simple
-- [ ] configuration - cats effects way
+- [x] configuration - a bit complex and the cats-effects way
 - [x] simple database example
+- [ ] complex business data model changes (lenses)
+- [ ] complex business data model mapping (lenses)
 - [ ] certificates and HTTPs
 - [ ] integrate the application into a sidecar
 

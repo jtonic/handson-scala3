@@ -29,6 +29,20 @@ package config:
       apiKey = rawConfig.getString("application.apiKey")
     )
 
+  case class ServerMetadata(name: String, value: String, description: Option[String], valueType: String)
+  case class ServerSettings(
+    hostName: String, port: Int, tls: Option[Boolean],
+    aliases: List[String], info: Map[String, String], metadata: List[ServerMetadata])
+
+  def fetchServerSettings() =
+    import io.circe.generic.auto._
+    import io.circe.config.syntax._
+    import io.circe.config.parser
+    import cats.effect.IO
+    import cats.effect.unsafe.implicits.global
+
+    parser.decodePathF[IO, ServerSettings](path = "serverSettings")
+
 package exceptions:
   final case class ValidationException(msg: String)
       extends RuntimeException(msg)
@@ -164,7 +178,6 @@ package DbPreconditions:
 
 
 package fp:
-
   extension [F[_], A](fa: F[A])
     // flatMap
     def >>-[B](f: A => F[B])(using F: cats.FlatMap[F]): F[B] = F.flatMap(fa)(f)
@@ -194,6 +207,8 @@ object DbApp extends IOApp.Simple:
 
     val program: IO[Unit] = for {
         _ <- logger.info("Start...")
+
+        serverSettings <- fetchServerSettings() >>>- { it => logger.info(s"Server settings: $it") }
 
         // validate the input
         inputInt <- validatePositive(10) >>>- { it => logger.info(s"Input $it!") }
