@@ -20,7 +20,8 @@
 - [x] slick, postgres, cats effects
 - [x] slf4j/logback/cats-slf4j logging
 - [ ] simple http4s HTTP client example with cats effect example
-- [ ] simple configuration
+- [x] configuration - simple
+- [ ] configuration - cats effects way
 - [x] simple database example
 - [ ] certificates and HTTPs
 - [ ] integrate the application into a sidecar

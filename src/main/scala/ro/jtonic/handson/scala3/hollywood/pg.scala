@@ -15,6 +15,20 @@ import cats.syntax.flatMap
 
 implicit val logger: Logger[IO] = Slf4jLogger.getLogger[IO]
 
+package config:
+  import com.typesafe.config._
+  final case class Config(
+      apiSecret: String,
+      apiKey: String,
+  )
+
+  def fetchConfig() =
+    val rawConfig = ConfigFactory.load()
+    Config(
+      apiSecret = rawConfig.getString("application.apiSecret"),
+      apiKey = rawConfig.getString("application.apiKey")
+    )
+
 package exceptions:
   final case class ValidationException(msg: String)
       extends RuntimeException(msg)
@@ -166,6 +180,7 @@ object DbApp extends IOApp.Simple:
 
   override def run: IO[Unit] =
     import slick.jdbc.PostgresProfile.api._
+    import config._
     import fp._
     import exceptions._
     import DbPreconditions._
@@ -173,6 +188,9 @@ object DbApp extends IOApp.Simple:
     import DbModel._
     import DbOperations._
     import concurrent.duration.DurationInt
+
+    val conf = fetchConfig()
+    println(s"Config: $conf")
 
     val program: IO[Unit] = for {
         _ <- logger.info("Start...")
