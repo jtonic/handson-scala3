@@ -26,3 +26,6 @@ final case class TicketId(value: String) extends AnyVal:
   def asOption: Option[String] = Option(value)
 
 case class Ticket(id: TicketId, ticketType: TicketType, price: BigDecimal)
+
+final case class BarCode(value: String) extends AnyVal
+final case class Description(value: String) extends AnyVal
