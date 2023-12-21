@@ -114,6 +114,28 @@
       <version>42.7.0</version>
     </dependency>
 
+    <dependency>
+        <groupId>dev.optics</groupId>
+        <artifactId>monocle-core_3</artifactId>
+        <version>3.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>dev.optics</groupId>
+      <artifactId>monocle-macro_3</artifactId>
+      <version>3.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>dev.optics</groupId>
+      <artifactId>monocle-refined_3</artifactId>
+      <version>3.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>dev.optics</groupId>
+      <artifactId>monocle-law_3</artifactId>
+      <version>3.2.0</version>
+    </dependency>
+
+
     <!-- logging -->
     <dependency>
         <groupId>ch.qos.logback</groupId>
