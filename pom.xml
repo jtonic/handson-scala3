@@ -209,8 +209,11 @@
             </goals>
             <configuration>
               <args>
-                <arg>-dependencyfile</arg>
-                <arg>${project.build.directory}/.scala_dependencies</arg>
+                enable the following in case of wrong equality for two different opaque typs for over the same underlying type
+                <!-- <arg>-language:strictEquality</arg> -->
+
+                <!-- <arg>-dependencyfile</arg>
+                <arg>${project.build.directory}/.scala_dependencies</arg> -->
               </args>
             </configuration>
           </execution>
