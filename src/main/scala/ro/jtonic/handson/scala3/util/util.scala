@@ -14,3 +14,10 @@ extension [T] (t: Try[T])
   def toRight[L](tr: Throwable => L): Either[L, T] = t match
     case Success(value) => Right(value)
     case Failure(exception) => Left(tr(exception))
+
+def using[T](t: T)(f: T => Unit): Unit = f(t)
+
+extension [T](x: T)
+  def execute(f: T => Unit): T =
+    f(x)
+    x
