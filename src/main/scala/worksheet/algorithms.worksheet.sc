@@ -18,3 +18,13 @@ def insert(x: Int, xs: List[Int]): List[Int] =
   else xs.head :: insert(x, xs.tail)
 
 isort(List(5, 3, 12, 1, 2))
+
+// -----------------------------------------------------------------------------------
+// Greatest Common Divisor
+// -----------------------------------------------------------------------------------
+def gcd(a: Long, b: Long): Long =
+  if b == 0 then a else gcd(b, a % b)
+
+gcd(10, 20)
+gcd(120, 30)
+gcd(100, 13)
