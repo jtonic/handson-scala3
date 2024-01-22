@@ -14,8 +14,9 @@ Here's an example of a FunSuite with Matchers mixed in:
 import org.scalatestplus.junit.JUnitRunner
 
 import org.junit.runner.RunWith
+import org.scalatest.diagrams.Diagrams
 @RunWith(classOf[JUnitRunner])
-class ListSuite extends AnyFunSuite with Matchers {
+class MySuite extends AnyFunSuite with Matchers with Diagrams {
 
   test("An empty list should be empty") {
     List() shouldBe empty
@@ -23,7 +24,8 @@ class ListSuite extends AnyFunSuite with Matchers {
   }
 
   test("A non-empty list should not be empty") {
-    List(1, 2, 3) should not be empty
+    List.empty[Int] shouldBe empty
+    // assert(List.empty[Int].nonEmpty) // useful when using diagrams
     List("fee", "fie", "foe", "fum") should not be empty
   }
 

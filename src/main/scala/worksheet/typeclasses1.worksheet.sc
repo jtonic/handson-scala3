@@ -13,7 +13,9 @@ tony.getOlder()
 tony.nickname
 
 
+// -----------------------------------------------------------------------------------
 // type classes
+// -----------------------------------------------------------------------------------
 
 trait JsonWriter[T]:
   def write(value: T): String
@@ -29,3 +31,26 @@ given JsonWriter[Person] with
 val json: String = toJson(tony)
 
 json
+
+// -----------------------------------------------------------------------------------
+// multiversal equality
+// -----------------------------------------------------------------------------------
+
+case class Apple(size: Int) derives CanEqual // idiomatic
+// not idiomatic
+// object Apple:
+//   given CanEqual[Apple, Apple] = CanEqual.derived
+
+case class Orange(size: Int)
+
+val apple1 = Apple(1)
+val apple2 = Apple(1)
+val orange1 = Orange(1)
+
+apple1 == apple2
+// apple1 == orange1 // it is allowed for back if not strict equality
+
+import scala.language.strictEquality
+// apple1 == orange1 // it is not allowed with strict equality. compiler error
+
+apple1 == apple2
