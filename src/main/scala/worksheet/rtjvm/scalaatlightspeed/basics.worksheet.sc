@@ -18,5 +18,3 @@ def factorial(n: Int): Int =
   else n * factorial(n -1)
 
 factorial(5)
-
-val unit = ()
