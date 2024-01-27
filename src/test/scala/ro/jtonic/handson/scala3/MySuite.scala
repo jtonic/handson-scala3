@@ -7,14 +7,13 @@ import org.scalatestplus.junit.JUnitRunner
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.funspec.AnyFunSpec
+import org.scalatestplus.junit.JUnitRunner
+import org.junit.runner.RunWith
+import org.scalatest.diagrams.Diagrams
 
 /*
 Here's an example of a FunSuite with Matchers mixed in:
  */
-import org.scalatestplus.junit.JUnitRunner
-
-import org.junit.runner.RunWith
-import org.scalatest.diagrams.Diagrams
 @RunWith(classOf[JUnitRunner])
 class MySuite extends AnyFunSuite with Matchers with Diagrams {
 
