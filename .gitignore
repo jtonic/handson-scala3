@@ -24,3 +24,6 @@ target/
 
 ## tmp files
 .tmp/
+
+## Java
+*.class
