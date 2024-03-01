@@ -40,3 +40,17 @@ extension [A](lst: List[A])
   def combineAllValues(using combinator: Combinator[A]) = lst.reduce(combinator.combine)
 
 List(100, 200, 300, 400).combineAllValues
+
+// ------------------------------------------------------------------------
+// 3. Summons contextual parameters
+// ------------------------------------------------------------------------
+trait Database:
+  def byId(id: Int): String = s"record found by id: $id"
+
+object Users:
+
+  def findById(id: Int)(using Database): String =
+    summon[Database].byId(id)
+
+given Database = new Database {}
+println(s"info: ${Users.findById(10)}")
