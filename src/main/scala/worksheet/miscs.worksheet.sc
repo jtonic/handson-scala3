@@ -19,3 +19,18 @@ println("Hello world!")
 
 val a: String = null
 a
+
+
+// inefficient increment of List's elements
+
+val lst = List(1, 2, 3)
+var result = List[Int]()
+for x <- lst do result = result ::: List(x + 1)
+result
+
+// using ListBuffer to increment list elements
+import scala.collection.mutable.ListBuffer
+
+var result2 = ListBuffer[Int]()
+for x <- lst do result2 += x + 1
+result2

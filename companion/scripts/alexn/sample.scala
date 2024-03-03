@@ -1,12 +1,12 @@
-//> using scala "2.13.10"
-//> using lib "ch.qos.logback:logback-classic:1.4.6"
-//> using lib "co.fs2::fs2-core::3.6.1"
-//> using lib "co.fs2::fs2-reactive-streams::3.6.1"
-//> using lib "com.typesafe.akka::akka-actor-typed::2.6.20"
-//> using lib "com.typesafe.akka::akka-actor::2.6.20"
-//> using lib "com.typesafe.akka::akka-stream-typed::2.6.20"
-//> using lib "com.typesafe.akka::akka-stream::2.6.20"
-//> using lib "org.typelevel::cats-effect::3.4.9"
+
+//> using dep "ch.qos.logback:logback-classic:1.4.6"
+//> using dep "co.fs2::fs2-core::3.6.1"
+//> using dep "co.fs2::fs2-reactive-streams::3.6.1"
+//> using dep "com.typesafe.akka::akka-actor-typed::2.6.20"
+//> using dep "com.typesafe.akka::akka-actor::2.6.20"
+//> using dep "com.typesafe.akka::akka-stream-typed::2.6.20"
+//> using dep "com.typesafe.akka::akka-stream::2.6.20"
+//> using dep "org.typelevel::cats-effect::3.4.9"
 
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.{ActorSystem => TypedActorSystem}
