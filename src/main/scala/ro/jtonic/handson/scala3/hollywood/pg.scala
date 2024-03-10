@@ -82,15 +82,15 @@ package DbOperations:
     import DbExecutionContext._
 
     val godFather =
-      Movie(name = "The Godfather", LocalDate.of(1972, 3, 24), 175)
-    val matrix = Movie(name = "The Matrix", LocalDate.of(1999, 3, 31), 136)
+      Movie(name = "The Godfather", releaseDate = LocalDate.of(1972, 3, 24), lengthInMin = 175)
+    val matrix = Movie(name = "The Matrix", releaseDate = LocalDate.of(1999, 3, 31), lengthInMin = 136)
     val matrixReloaded =
-      Movie(name = "The Matrix Reloaded", LocalDate.of(2003, 5, 7), 138)
+      Movie(name = "The Matrix Reloaded", releaseDate = LocalDate.of(2003, 5, 7), lengthInMin = 138)
     val matrixRevolutions =
-      Movie(name = "The Matrix Revolutions", LocalDate.of(2003, 10, 27), 129)
+      Movie(name = "The Matrix Revolutions", releaseDate = LocalDate.of(2003, 10, 27), lengthInMin = 129)
     val matrixResurrections =
-      Movie(name = "The Matrix Resurrections", LocalDate.of(2021, 12, 22), 148)
-    val troy = Movie(name = "Troy", LocalDate.of(2004, 5, 14), 163)
+      Movie(name = "The Matrix Resurrections", releaseDate = LocalDate.of(2021, 12, 22), lengthInMin = 148)
+    val troy = Movie(name = "Troy", releaseDate = LocalDate.of(2004, 5, 14), lengthInMin = 163)
     val movies = Seq(
       godFather,
       matrix,
