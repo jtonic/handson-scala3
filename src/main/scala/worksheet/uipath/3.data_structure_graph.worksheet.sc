@@ -26,6 +26,8 @@ class Graph[A](val isDirected: Boolean = false, val isWeighted: Boolean = false)
     updateIndexes()
     node
 
+  def += (data: A): Node[A] = addNode(data)
+
   def removeNode(node: Node[A]): Unit =
     nodes -= node
     updateIndexes()
@@ -37,6 +39,9 @@ class Graph[A](val isDirected: Boolean = false, val isWeighted: Boolean = false)
     if !isDirected then
       to.neighbors += from
       if isWeighted then to.weights += weight
+
+  // unrecommended
+  def += (nodes: (Node[A], Node[A])): Unit = addEdge(nodes._1, nodes._2)
 
   def removeEdge(from: Node[A], to: Node[A]): Unit =
     val idxOpt = from.neighbors.zipWithIndex.find((n, idx) => n == to).map(_._2)
@@ -77,8 +82,8 @@ class Graph[A](val isDirected: Boolean = false, val isWeighted: Boolean = false)
 
 
 val graph = Graph[Int](isDirected = false, isWeighted = false)
-val n1 = graph.addNode(1)
-val n2 = graph.addNode(2)
+val n1 = graph += 1
+val n2 = graph += 2
 val n3 = graph.addNode(3)
 val n4 = graph.addNode(4)
 val n5 = graph.addNode(5)
@@ -87,8 +92,8 @@ val n7 = graph.addNode(7)
 val n8 = graph.addNode(8)
 
 
-graph.addEdge(n1, n2)
-graph.addEdge(n1, n3)
+graph += (n1, n2)
+graph += (n1, n3)
 graph.addEdge(n2, n4)
 graph.addEdge(n3, n4)
 graph.addEdge(n4, n5)
