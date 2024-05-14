@@ -2,10 +2,10 @@
 
 ## Working with scala-cli
 
-- [ ] specific java version
-- [ ] specific scala version
+- [x] specific java version
+- [x] specific scala version
 - [ ] dependencies (the toolkit)
-- [ ] more files for the same logic
+- [x] more files for the same logic
 - [ ] package the entire solution as natives
 
 ## Working with File Systems
