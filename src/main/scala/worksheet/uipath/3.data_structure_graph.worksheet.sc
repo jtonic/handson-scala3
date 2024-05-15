@@ -1,3 +1,4 @@
+import Model.Graph
 import ro.jtonic.handson.scala3.dsl.DurationUtils.sleep.current
 import scala.collection.mutable.ArrayBuffer
 import ro.jtonic.handson.scala3.util.Benchmark.time
@@ -6,108 +7,118 @@ import scala.concurrent.duration.Duration
 import scala.collection
 import scala.collection.mutable.ListBuffer as BList
 
-class Node[A](val data: A):
+object Model:
 
-  var index: Int = -1
-  var neighbors: BList[Node[A]] = BList.empty[Node[A]]
-  var weights: BList[Int] = BList.empty[Int]
+  class Node[A](val data: A):
 
-  override def toString: String = s"Index: $index. Node($data). Neighbors: ${neighbors.size}. Weights: ${weights.size}"
+    var index: Int = -1
+    var neighbors: BList[Node[A]] = BList.empty[Node[A]]
+    var weights: BList[Int] = BList.empty[Int]
 
-
-class Edge[A](val from: Node[A], val to: Node[A], val weight: Int) :
-
-  override def toString: String = s"Edge(${from.data}, ${to.data}, $weight)"
+    override def toString: String = s"Index: $index. Node($data). Neighbors: ${neighbors.size}. Weights: ${weights.size}"
 
 
-class Graph[A](val isDirected: Boolean = false, val isWeighted: Boolean = false):
+  class Edge[A](val from: Node[A], val to: Node[A], val weight: Int) :
 
-  private val nodes: BList[Node[A]] = BList.empty
+    override def toString: String = s"Edge(${from.data}, ${to.data}, $weight)"
 
-  def addNode(data: A): Node[A] =
-    val node = Node(data)
-    nodes += node
-    updateIndices()
-    node
 
-  def += (data: A): Node[A] = addNode(data)
+  class Graph[A](val isDirected: Boolean = false, val isWeighted: Boolean = false):
 
-  def removeNode(node: Node[A]): Unit =
-    nodes -= node
-    updateIndices()
-    nodes.foreach(n => removeEdge(n, node))
+    private val _nodes: BList[Node[A]] = BList.empty
 
-  def addEdge(from: Node[A], to: Node[A], weight: Int = 0): Unit =
-    from.neighbors += to
-    if isWeighted then from.weights += weight
-    if !isDirected then
-      to.neighbors += from
-      if isWeighted then to.weights += weight
+    def nodes: List[Node[A]] = _nodes.toList
 
-  // unrecommended
-  def += (nodes: (Node[A], Node[A])): Unit = addEdge(nodes._1, nodes._2)
+    def addNode(data: A): Node[A] =
+      val node = Node(data)
+      _nodes += node
+      updateIndices()
+      node
 
-  def removeEdge(from: Node[A], to: Node[A]): Unit =
-    val idxOpt = from.neighbors.zipWithIndex.find((n, idx) => n == to).map(_._2)
-    if idxOpt.isEmpty then return
-    val idx = idxOpt.get
-    from.neighbors.remove(idx)
-    if isWeighted then from.weights.remove(idx)
-    if !isDirected then
-      val idxOpt = to.neighbors.zipWithIndex.find((n, idx) => n == from).map(_._2)
+    def += (data: A): Node[A] = addNode(data)
+
+    def removeNode(node: Node[A]): Unit =
+      _nodes -= node
+      updateIndices()
+      _nodes.foreach(n => removeEdge(n, node))
+
+    def addEdge(from: Node[A], to: Node[A], weight: Int = 0): Unit =
+      from.neighbors += to
+      if isWeighted then from.weights += weight
+      if !isDirected then
+        to.neighbors += from
+        if isWeighted then to.weights += weight
+
+    // unrecommended
+    def += (nodes: (Node[A], Node[A])): Unit = addEdge(nodes._1, nodes._2)
+
+    def removeEdge(from: Node[A], to: Node[A]): Unit =
+      val idxOpt = from.neighbors.zipWithIndex.find((n, idx) => n == to).map(_._2)
       if idxOpt.isEmpty then return
       val idx = idxOpt.get
-      to.neighbors.remove(idx)
-      if isWeighted then to.neighbors.remove(idx)
+      from.neighbors.remove(idx)
+      if isWeighted then from.weights.remove(idx)
+      if !isDirected then
+        val idxOpt = to.neighbors.zipWithIndex.find((n, idx) => n == from).map(_._2)
+        if idxOpt.isEmpty then return
+        val idx = idxOpt.get
+        to.neighbors.remove(idx)
+        if isWeighted then to.neighbors.remove(idx)
 
-  def getEdges: List[Edge[A]] =
-    val edges = BList.empty[Edge[A]]
-    for from <- nodes do
-      for ((_, idx) <- from.neighbors.zipWithIndex) do
-        val weight = if idx < from.weights.size then from.weights(idx) else 0
-        val edge = Edge(from = from, to = from.neighbors(idx), weight = weight)
-        edges += edge
-    edges.toList
+    def getEdges: List[Edge[A]] =
+      val edges = BList.empty[Edge[A]]
+      for from <- _nodes do
+        for ((_, idx) <- from.neighbors.zipWithIndex) do
+          val weight = if idx < from.weights.size then from.weights(idx) else 0
+          val edge = Edge(from = from, to = from.neighbors(idx), weight = weight)
+          edges += edge
+      edges.toList
 
-  private def updateIndices(): Unit =
-    var idx = 0
-    nodes.foreach(n => {
-      n.index = idx; idx = idx + 1
-    })
+    private def updateIndices(): Unit =
+      var idx = 0
+      _nodes.foreach(n => {
+        n.index = idx; idx = idx + 1
+      })
 
-  // def getNodeByIndex(idx: Int): Option[Node[A]] =
-  //   if idx >= nodes.size then None else Some(nodes(idx))
+    override def toString: String =
+      val sb = new StringBuilder
+      sb.append(s"Graph\n\tisDirected: $isDirected\n\tisWeighted: $isWeighted\n")
+      sb.append("Nodes:\n")
+      _nodes.foreach(n => sb.append(s"\t$n\n"))
+      sb.append("Edges:\n")
+      getEdges.foreach(e => sb.append(s"\t$e\n"))
+      sb.toString
 
-  val getNodeByIndex: (Int) => Option[Node[A]] = (idx) =>
-    if idx >= nodes.size then None else Some(nodes(idx))
+object Extensions:
 
-  def getNode = getNodeByIndex
+  import Model.*
 
-  def apply(idx: Int): Option[Node[A]] = getNodeByIndex(idx)
+  extension [A](graph: Graph[A])
 
-  def dfs(): List[Node[A]] =
-     def dfs(indices: Array[Boolean], currentNode: Node[A], traversed: BList[Node[A]]): Unit =
-       traversed += currentNode
-       indices(currentNode.index) = true
-       for
-         n <- currentNode.neighbors if !indices(n.index)
-       do
-         dfs(indices, n, traversed)
+    def getNodeByIndex: (Int) => Option[Node[A]] = (idx) =>
+      if idx >= graph.nodes.size then None else Some(graph.nodes(idx))
 
-     val visited = new Array[Boolean](nodes.size)
-     val traversed = BList.empty[Node[A]]
-     dfs(visited, nodes(0), traversed)
-     traversed.toList
+    def getNode = graph.getNodeByIndex
 
-  override def toString: String =
-    val sb = new StringBuilder
-    sb.append(s"Graph\n\tisDirected: $isDirected\n\tisWeighted: $isWeighted\n")
-    sb.append("Nodes:\n")
-    nodes.foreach(n => sb.append(s"\t$n\n"))
-    sb.append("Edges:\n")
-    getEdges.foreach(e => sb.append(s"\t$e\n"))
-    sb.toString
+    def apply(idx: Int): Option[Node[A]] = getNodeByIndex(idx)
 
+    def dfs(): List[Node[A]] =
+       def dfs(indices: Array[Boolean], currentNode: Node[A], traversed: BList[Node[A]]): Unit =
+         traversed += currentNode
+         indices(currentNode.index) = true
+         for
+           n <- currentNode.neighbors if !indices(n.index)
+         do
+           dfs(indices, n, traversed)
+
+       val visited = new Array[Boolean](graph.nodes.size)
+       val traversed = BList.empty[Node[A]]
+       dfs(visited, graph.nodes(0), traversed)
+       traversed.toList
+
+
+import Model.*
+import Extensions.*
 
 val ndNwGraph = Graph[Int](isDirected = false, isWeighted = false)
 val n11 = ndNwGraph += 1
@@ -162,7 +173,6 @@ dwGraph.addEdge(n28, n25, 3)
 
 dwGraph
 
-//
 // Find nodes by index
 dwGraph.getNodeByIndex(7)
 dwGraph.getNode(5)
@@ -171,17 +181,6 @@ val node4 = dwGraph(3)
 node11.orNull
 
 val a: Int = node4.fold[Int](-1)(_.data)
-
-
-// -------------------------------------------------------
-// Benchmark
-// -------------------------------------------------------
-
-time(TimeUnit.NANOSECONDS):
-  (1 to 1000).toList.find(_ == 777)
-
-time(TimeUnit.MILLISECONDS):
-  (1 to 1000).toList.find(_ == 777)
 
 // traverse using DFS
 time():
