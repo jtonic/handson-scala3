@@ -1,3 +1,4 @@
+import scala.collection.mutable.Queue as MQueue
 import Model.Graph
 import ro.jtonic.handson.scala3.dsl.DurationUtils.sleep.current
 import scala.collection.mutable.ArrayBuffer
@@ -116,6 +117,24 @@ object Extensions:
        dfs(visited, graph.nodes(0), traversed)
        traversed.toList
 
+    def bfs(): List[Node[A]] =
+      def bfs(node: Node[A]): BList[Node[A]] =
+        val visited = new Array[Boolean](graph.nodes.size)
+        visited(node.index) = true
+        val traversed = BList.empty[Node[A]]
+        val queue = MQueue.empty[Node[A]]
+        queue += node
+        while queue.size > 0 do
+          val next = queue.dequeue()
+          traversed += next
+          for
+            n <- next.neighbors if !visited(n.index)
+          do
+            visited(n.index) = true
+            queue += n
+        traversed
+      bfs(graph.nodes(0)).toList
+
 
 import Model.*
 import Extensions.*
@@ -185,4 +204,8 @@ val a: Int = node4.fold[Int](-1)(_.data)
 // traverse using DFS
 time():
   val traversed = dwGraph.dfs()
+  traversed.foreach(println)
+
+time():
+  val traversed = dwGraph.bfs()
   traversed.foreach(println)
