@@ -1,15 +1,16 @@
-// implement a graph with adjacency list
+import ro.jtonic.handson.scala3.dsl.DurationUtils.sleep.current
+import scala.collection.mutable.ArrayBuffer
 import ro.jtonic.handson.scala3.util.Benchmark.time
 import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.Duration
 import scala.collection
-import scala.collection.mutable.ListBuffer as MList
+import scala.collection.mutable.ListBuffer as BList
 
 class Node[A](val data: A):
 
   var index: Int = -1
-  var neighbors: MList[Node[A]] = MList.empty[Node[A]]
-  var weights: MList[Int] = MList.empty[Int]
+  var neighbors: BList[Node[A]] = BList.empty[Node[A]]
+  var weights: BList[Int] = BList.empty[Int]
 
   override def toString: String = s"Index: $index. Node($data). Neighbors: ${neighbors.size}. Weights: ${weights.size}"
 
@@ -21,19 +22,19 @@ class Edge[A](val from: Node[A], val to: Node[A], val weight: Int) :
 
 class Graph[A](val isDirected: Boolean = false, val isWeighted: Boolean = false):
 
-  private val nodes: MList[Node[A]] = MList.empty
+  private val nodes: BList[Node[A]] = BList.empty
 
   def addNode(data: A): Node[A] =
     val node = Node(data)
     nodes += node
-    updateIndexes()
+    updateIndices()
     node
 
   def += (data: A): Node[A] = addNode(data)
 
   def removeNode(node: Node[A]): Unit =
     nodes -= node
-    updateIndexes()
+    updateIndices()
     nodes.foreach(n => removeEdge(n, node))
 
   def addEdge(from: Node[A], to: Node[A], weight: Int = 0): Unit =
@@ -60,7 +61,7 @@ class Graph[A](val isDirected: Boolean = false, val isWeighted: Boolean = false)
       if isWeighted then to.neighbors.remove(idx)
 
   def getEdges: List[Edge[A]] =
-    val edges = MList.empty[Edge[A]]
+    val edges = BList.empty[Edge[A]]
     for from <- nodes do
       for ((_, idx) <- from.neighbors.zipWithIndex) do
         val weight = if idx < from.weights.size then from.weights(idx) else 0
@@ -68,7 +69,7 @@ class Graph[A](val isDirected: Boolean = false, val isWeighted: Boolean = false)
         edges += edge
     edges.toList
 
-  private def updateIndexes(): Unit =
+  private def updateIndices(): Unit =
     var idx = 0
     nodes.foreach(n => {
       n.index = idx; idx = idx + 1
@@ -83,6 +84,20 @@ class Graph[A](val isDirected: Boolean = false, val isWeighted: Boolean = false)
   def getNode = getNodeByIndex
 
   def apply(idx: Int): Option[Node[A]] = getNodeByIndex(idx)
+
+  def dfs(): List[Node[A]] =
+     def dfs(indices: Array[Boolean], currentNode: Node[A], traversed: BList[Node[A]]): Unit =
+       traversed += currentNode
+       indices(currentNode.index) = true
+       for
+         n <- currentNode.neighbors if !indices(n.index)
+       do
+         dfs(indices, n, traversed)
+
+     val visited = new Array[Boolean](nodes.size)
+     val traversed = BList.empty[Node[A]]
+     dfs(visited, nodes(0), traversed)
+     traversed.toList
 
   override def toString: String =
     val sb = new StringBuilder
@@ -159,10 +174,16 @@ val a: Int = node4.fold[Int](-1)(_.data)
 
 
 // -------------------------------------------------------
-// Benchmar
+// Benchmark
+// -------------------------------------------------------
 
 time(TimeUnit.NANOSECONDS):
   (1 to 1000).toList.find(_ == 777)
 
 time(TimeUnit.MILLISECONDS):
   (1 to 1000).toList.find(_ == 777)
+
+// traverse using DFS
+time():
+  val traversed = dwGraph.dfs()
+  traversed.foreach(println)
