@@ -156,3 +156,13 @@ val node4 = dwGraph(3)
 node11.orNull
 
 val a: Int = node4.fold[Int](-1)(_.data)
+
+
+// -------------------------------------------------------
+// Benchmar
+
+time(TimeUnit.NANOSECONDS):
+  (1 to 1000).toList.find(_ == 777)
+
+time(TimeUnit.MILLISECONDS):
+  (1 to 1000).toList.find(_ == 777)
