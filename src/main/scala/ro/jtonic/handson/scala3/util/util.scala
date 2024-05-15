@@ -21,3 +21,14 @@ extension [T](x: T)
   def execute(f: T => Unit): T =
     f(x)
     x
+
+object  Benchmark:
+
+  import java.util.concurrent.TimeUnit
+  import scala.concurrent.duration.Duration
+
+  def time(tu: TimeUnit = TimeUnit.NANOSECONDS)(block: => Unit) =
+    val start = System.nanoTime()
+    block
+    val dur = Duration(System.nanoTime() - start, TimeUnit.NANOSECONDS).toUnit(tu)
+    println(s"Elapsed time: $dur [${tu.toString()}]")
