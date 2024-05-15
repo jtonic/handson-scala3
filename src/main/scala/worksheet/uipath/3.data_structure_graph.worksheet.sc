@@ -74,6 +74,16 @@ class Graph[A](val isDirected: Boolean = false, val isWeighted: Boolean = false)
       n.index = idx; idx = idx + 1
     })
 
+  // def getNodeByIndex(idx: Int): Option[Node[A]] =
+  //   if idx >= nodes.size then None else Some(nodes(idx))
+
+  val getNodeByIndex: (Int) => Option[Node[A]] = (idx) =>
+    if idx >= nodes.size then None else Some(nodes(idx))
+
+  def getNode = getNodeByIndex
+
+  def apply(idx: Int): Option[Node[A]] = getNodeByIndex(idx)
+
   override def toString: String =
     val sb = new StringBuilder
     sb.append(s"Graph\n\tisDirected: $isDirected\n\tisWeighted: $isWeighted\n")
