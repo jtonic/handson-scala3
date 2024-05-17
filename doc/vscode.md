@@ -1,13 +1,13 @@
 # Useful shortcuts
 
-{
-  "key": "alt+F12",
-  "command": "editor.action.peekDefinition",
-  "when": "editorHasDefinitionProvider && !inReferenceSearchEditor && !isInEmbeddedEditor"
-}
+"command": "editor.action.peekDefinition",
+"key": "alt+F12",
 
-{
-  "key": "ctrl+shift+up",
-  "command": "editor.action.smartSelect.expand",
-  "when": "editorTextFocus"
-}
+"command": "editor.action.smartSelect.expand",
+"key": "ctrl+shift+up",
+
+"command": "editor.action.peekDefinition",
+"key": "alt+f12",
+
+"command": "editor.action.triggerParameterHints",
+"key": "shift+cmd+space",
