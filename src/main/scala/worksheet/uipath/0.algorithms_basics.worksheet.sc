@@ -10,15 +10,13 @@ def fib(n: Int): Int = {
 fib(10)
 
 // fibonacci sequence using tail recursion
-def fibTail(n: Long): Long = {
+def fibTail(n: Long): Long =
   @tailrec
-  def loop(n: Long, prev: Long, cur: Long): Long = {
+  def loop(n: Long, prev: Long, cur: Long): Long =
     if (n <= 0) prev
     else loop(n - 1, cur, prev + cur)
-  }
-
   loop(n, 0, 1)
-}
+
 
 fibTail(10)
 

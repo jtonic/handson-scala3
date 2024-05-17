@@ -22,12 +22,23 @@ extension [T](x: T)
     f(x)
     x
 
+extension [A](self: List[A])
+  def sumBy[B](f: A => B)(implicit num: Numeric[B]): B =
+    self.map(f).sum
+
 object  Benchmark:
 
   import java.util.concurrent.TimeUnit
   import scala.concurrent.duration.Duration
 
-  def time(tu: TimeUnit = TimeUnit.NANOSECONDS)(block: => Unit) =
+  def time[A](tu: TimeUnit)(block: => A): A =
+    val start = System.nanoTime()
+    val result = block
+    val dur = Duration(System.nanoTime() - start, TimeUnit.NANOSECONDS).toUnit(tu)
+    println(s"Elapsed time: $dur [${tu.toString()}]")
+    result
+
+  def time(tu: TimeUnit = TimeUnit.NANOSECONDS)(block: => Unit): Unit =
     val start = System.nanoTime()
     block
     val dur = Duration(System.nanoTime() - start, TimeUnit.NANOSECONDS).toUnit(tu)
