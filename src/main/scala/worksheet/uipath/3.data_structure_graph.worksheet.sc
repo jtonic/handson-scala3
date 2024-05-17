@@ -1,3 +1,5 @@
+import ro.jtonic.handson.scala3.util.sumBy
+import ro.jtonic.handson.scala3.util.|>
 import scala.collection.mutable.Queue as MQueue
 import Model.Graph
 import ro.jtonic.handson.scala3.dsl.DurationUtils.sleep.current
@@ -75,6 +77,13 @@ object Model:
           edges += edge
       edges.toList
 
+    def getNodeByIndex: (Int) => Option[Node[A]] = (idx) =>
+      if idx >= nodes.size then None else Some(nodes(idx))
+
+    def getNode = getNodeByIndex
+
+    def apply(idx: Int): Option[Node[A]] = getNodeByIndex(idx)
+
     private def updateIndices(): Unit =
       var idx = 0
       _nodes.foreach(n => {
@@ -90,18 +99,11 @@ object Model:
       getEdges.foreach(e => sb.append(s"\t$e\n"))
       sb.toString
 
-object Extensions:
+object Traverse:
 
   import Model.*
 
   extension [A](graph: Graph[A])
-
-    def getNodeByIndex: (Int) => Option[Node[A]] = (idx) =>
-      if idx >= graph.nodes.size then None else Some(graph.nodes(idx))
-
-    def getNode = graph.getNodeByIndex
-
-    def apply(idx: Int): Option[Node[A]] = getNodeByIndex(idx)
 
     def dfs(): List[Node[A]] =
        def dfs(indices: Array[Boolean], currentNode: Node[A], traversed: BList[Node[A]]): Unit =
@@ -136,8 +138,35 @@ object Extensions:
       bfs(graph.nodes(0)).toList
 
 
+object MST:
+
+    import Model.*
+
+    def kruskal[A](graph: Graph[A]): List[Edge[A]] =
+      val edges = graph.getEdges.sortBy(_.weight)
+      val result = BList.empty[Edge[A]]
+      val parents = new Array[Int](graph.nodes.size)
+      for i <- 0 until parents.size do parents(i) = i
+
+      def findParent(node: Node[A]): Int =
+        if parents(node.index) == node.index then node.index else findParent(graph.getNode(parents(node.index)).get)
+
+      def union(from: Node[A], to: Node[A]): Unit =
+        val fromP = findParent(from)
+        val toP = findParent(to)
+        parents(fromP) = toP
+
+      for edge <- edges do
+        val fromP = findParent(edge.from)
+        val toP = findParent(edge.to)
+        if fromP != toP then
+          result += edge
+          union(edge.from, edge.to)
+
+      result.toList
+
 import Model.*
-import Extensions.*
+import Traverse.*
 
 val ndNwGraph = Graph[Int](isDirected = false, isWeighted = false)
 val n11 = ndNwGraph += 1
@@ -209,3 +238,36 @@ time():
 time():
   val traversed = dwGraph.bfs()
   traversed.foreach(println)
+
+// Minimum Spanning Tree with Kruskal algorithm
+
+def feedGraphKruskal(): Graph[Int] =
+  val graph = Graph[Int](true, true)
+  val n1 = graph += 1
+  val n2 = graph += 2
+  val n3 = graph += 3
+  val n4 = graph += 4
+  val n5 = graph += 5
+  val n6 = graph += 6
+  val n7 = graph += 7
+  val n8 = graph += 8
+
+  graph.addEdge(n1, n2, 3)
+  graph.addEdge(n1, n3, 5)
+  graph.addEdge(n2, n4, 4)
+  graph.addEdge(n3, n4, 12)
+  graph.addEdge(n4, n5, 9)
+  graph.addEdge(n4, n8, 8)
+  graph.addEdge(n5, n6, 4)
+  graph.addEdge(n5, n7, 5)
+  graph.addEdge(n5, n8, 1)
+  graph.addEdge(n6, n7, 6)
+  graph.addEdge(n7, n8, 20)
+  graph
+
+val feed = feedGraphKruskal()
+val mst = feed |> MST.kruskal
+mst.foreach(println)
+println(s"Total weight: ${mst.sumBy(_.weight)}")
+
+// delete from here
