@@ -104,7 +104,7 @@ val result2 = timed(TimeUnit.MILLISECONDS):
 println(s"The closes pair is ${result2.result}. Calculated in ${result2.duration}")
 
 // ------------------------------------------------------------------------------
-// 3. rat in a maze
+// 3. rat in a maze (back-tracking algorithm)
 // ------------------------------------------------------------------------------
 
 // ------------------------------------------------------------------------------
