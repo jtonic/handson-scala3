@@ -11,3 +11,9 @@
 
 "command": "editor.action.triggerParameterHints",
 "key": "shift+cmd+space",
+
+"key": "alt+f8",
+"command": "editor.action.marker.next",
+
+"key": "shift+alt+a",
+"command": "editor.action.blockComment",
