@@ -1,14 +1,14 @@
 package ro.jtonic.handson.scala3.algorithms
 
 import org.scalatest.funsuite.AnyFunSuite
-import org.scalatest.matchers.should.Matchers
+import org.scalatest.matchers.should.Matchers as ShouldMatchers
 import scala.annotation.tailrec
 import ro.jtonic.handson.scala3.util.Benchmark.time
 import java.util.concurrent.TimeUnit.*
 import scala.collection.mutable.HashSet
 import scala.collection.mutable.HashMap
 
-class Alg1Suite extends AnyFunSuite with Matchers:
+class Alg1Suite extends AnyFunSuite with ShouldMatchers:
 
   ignore("!Fibonacci v1: recursion"):
     def fib(n: Int): Long =
@@ -51,3 +51,32 @@ class Alg1Suite extends AnyFunSuite with Matchers:
           b = res
       b
     time(MILLISECONDS) { fib(50) } shouldBe 12_586_269_025L
+
+class Alg2Suite extends AnyFunSuite with ShouldMatchers:
+
+  test("compute the n! - factorial"):
+    def factorial(n: Int): Int =
+      if n <= 1 then 1
+      else n * factorial(n - 1)
+    factorial(3) shouldBe 6
+    factorial(4) shouldBe 24
+
+  test("compute factorial using tail recursion"):
+    def factorial(n: Int): Int =
+      @tailrec def factorial(n: Int, acc: Int): Int =
+        if n <= 1 then acc
+        else
+          factorial(n - 1, acc * n)
+
+      factorial(n, 1)
+
+    factorial(3) shouldBe 6
+    factorial(4) shouldBe 24
+
+  test("compute the sum of two positive numbers"):
+    def sum(a: Int, b: Int): Int =
+      if a == 0 then b
+      else
+        sum(a - 1, b + 1)
+    sum(3, 10) shouldBe 13
+    sum(100, 200) shouldBe 300
