@@ -3,6 +3,40 @@ package ro.jtonic.handson.scala3.algorithms.datastructure
 import scala.collection.mutable.ListBuffer as BList
 import scala.collection.mutable.Queue as MQueue
 
+package tree.model:
+
+  sealed trait Tree[A]
+
+  case class Leaf[A](value: A) extends Tree[A]
+
+  case class Node[A](value: A, left: Tree[A], right: Tree[A]) extends Tree[A]
+
+package tree.operations:
+
+    import tree.model.*
+
+    object Search:
+
+      /**
+       * search a a tree using recursion and depth-first search
+       */
+      def dfs[A](tree: Tree[A], value: A): Boolean =
+        tree match
+          case Leaf(v) => v == value
+          case Node(v, left, right) => v == value || dfs(left, value) || dfs(right, value)
+
+      /**
+       * search a tree using breadth-first search
+       */
+      def bfs[A](tree: Tree[A], value: A): Boolean =
+        @annotation.tailrec
+        def loop(queue: List[Tree[A]]): Boolean =
+          queue match
+            case Nil => false
+            case Leaf(v) :: rest => v == value || loop(rest)
+            case Node(v, left, right) :: rest => v == value || loop(rest ++ List(left, right))
+        loop(List(tree))
+
 package graph.model:
 
     class Node[A](val data: A):
