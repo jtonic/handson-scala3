@@ -1,6 +1,7 @@
 package ro.jtonic.handson.scala3.util
 
 import scala.util.{Try, Failure, Success}
+import java.io.File
 
 extension [T](x: T)
   def execute(f: T => Unit): T =
@@ -61,6 +62,10 @@ package string:
 package array:
 
   type Matrix[Char] = Array[Array[Char]]
+
+  def load(filePath: String, sep: Char = '\u0000'): Matrix[Char] =
+    import scala.io.Source
+    Source.fromFile(filePath).mkString.toArray(sep)
 
   extension (self: String)
 
