@@ -51,3 +51,6 @@ object  Benchmark:
     block
     val dur = Duration(System.nanoTime() - start, TimeUnit.NANOSECONDS).toUnit(tu)
     println(f"Elapsed time: $dur%.2f [${tu.toString()}]")
+
+extension (self: java.lang.StringBuilder)
+  def clear() = self.setLength(0)
