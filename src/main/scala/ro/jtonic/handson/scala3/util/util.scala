@@ -52,21 +52,22 @@ package benchmark:
     val start = System.nanoTime()
     block
     val dur = Duration(System.nanoTime() - start, TimeUnit.NANOSECONDS).toUnit(tu)
-    println(f"Elapsed time: $dur%.2f [${tu.toString()}]")
+    println(f"Elapsed time: $dur%.2f [${tu.toString}]")
 
 package string:
   extension (self: java.lang.StringBuilder)
-    def clear() = self.setLength(0)
+    def clear(): Unit = self.setLength(0)
 
 package array:
 
   type Matrix[Char] = Array[Array[Char]]
 
   extension (self: String)
-    def toArray(): Matrix[Char] =
+
+    def toArray(sep: Char = '\u0000'): Matrix[Char] =
       val str = self.stripMargin('|').replaceFirst("\n", "")
-      val lines = str.split("\n")
-      val arr = Array.ofDim[Char](lines.size, lines(0).size)
+      val lines = (if sep == '\u0000' then str else str.replace(sep.toString, "")).split("\n")
+      val arr = Array.ofDim[Char](lines.size, lines(0).length)
       for
         (l, li) <- lines.zipWithIndex
         (c, ci) <- l.zipWithIndex
@@ -74,7 +75,7 @@ package array:
         arr(li)(ci) = c
       arr
 
-  extension (self: Array[Array[Char]])
+  extension (self: Matrix[Char])
     def print(): Unit =
       import scala.Console.print as cPrint
       for l <- self do
