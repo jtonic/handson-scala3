@@ -3,7 +3,7 @@ package ro.jtonic.handson.scala3.algorithms
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers as ShouldMatchers
 import scala.annotation.tailrec
-import ro.jtonic.handson.scala3.util.Benchmark.time
+import ro.jtonic.handson.scala3.util.benchmark.time
 import java.util.concurrent.TimeUnit.*
 import scala.collection.mutable.HashSet
 import scala.collection.mutable.HashMap

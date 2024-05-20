@@ -2,32 +2,34 @@ package ro.jtonic.handson.scala3.util
 
 import scala.util.{Try, Failure, Success}
 
-extension [A](x: A)
-  def |>[B](f: A => B): B = f(x)
+extension [T](x: T)
+  def execute(f: T => Unit): T =
+    f(x)
+    x
 
-extension [A, B](f: A => B)
-  def <|(a: A): B = f(a)
-  def >>[C](g: B => C): A => C = f.andThen(g)
-  def <<[C](g: C => A): C => B = g.andThen(f)
+def using[T](t: T)(f: T => Unit): Unit = f(t)
+
+package function:
+
+  extension [A](x: A)
+    def |>[B](f: A => B): B = f(x)
+
+  extension [A, B](f: A => B)
+    def <|(a: A): B = f(a)
+    def >>[C](g: B => C): A => C = f.andThen(g)
+    def <<[C](g: C => A): C => B = g.andThen(f)
 
 extension [T] (t: Try[T])
   def toRight[L](tr: Throwable => L): Either[L, T] = t match
     case Success(value) => Right(value)
     case Failure(exception) => Left(tr(exception))
 
-def using[T](t: T)(f: T => Unit): Unit = f(t)
+package math:
+  extension [A](self: List[A])
+    def sumBy[B](f: A => B)(using num: Numeric[B]): B =
+      self.map(f).sum
 
-extension [T](x: T)
-  def execute(f: T => Unit): T =
-    f(x)
-    x
-
-extension [A](self: List[A])
-  def sumBy[B](f: A => B)(using num: Numeric[B]): B =
-    self.map(f).sum
-
-object  Benchmark:
-
+package benchmark:
   import java.util.concurrent.TimeUnit
   import scala.concurrent.duration.Duration
 
@@ -52,5 +54,30 @@ object  Benchmark:
     val dur = Duration(System.nanoTime() - start, TimeUnit.NANOSECONDS).toUnit(tu)
     println(f"Elapsed time: $dur%.2f [${tu.toString()}]")
 
-extension (self: java.lang.StringBuilder)
-  def clear() = self.setLength(0)
+package string:
+  extension (self: java.lang.StringBuilder)
+    def clear() = self.setLength(0)
+
+package array:
+
+  type Matrix[Char] = Array[Array[Char]]
+
+  extension (self: String)
+    def toArray(): Matrix[Char] =
+      val str = self.stripMargin('|').replaceFirst("\n", "")
+      val lines = str.split("\n")
+      val arr = Array.ofDim[Char](lines.size, lines(0).size)
+      for
+        (l, li) <- lines.zipWithIndex
+        (c, ci) <- l.zipWithIndex
+      do
+        arr(li)(ci) = c
+      arr
+
+  extension (self: Array[Array[Char]])
+    def print(): Unit =
+      import scala.Console.print as cPrint
+      for l <- self do
+        for c <- l do
+          cPrint(c)
+        println()

@@ -1,10 +1,10 @@
-import ro.jtonic.handson.scala3.util.sumBy
-import ro.jtonic.handson.scala3.util.|>
+import ro.jtonic.handson.scala3.util.math.*
+import ro.jtonic.handson.scala3.util.function.|>
 import ro.jtonic.handson.scala3.algorithms.datastructure.graph.model.{Graph, Node, Edge}
 import ro.jtonic.handson.scala3.algorithms.datastructure.graph.Traverse._
 import ro.jtonic.handson.scala3.algorithms.datastructure.graph.MST
 
-import ro.jtonic.handson.scala3.util.Benchmark.time
+import ro.jtonic.handson.scala3.util.benchmark.time
 
 val ndNwGraph = Graph[Int](isDirected = false, isWeighted = false)
 val n11 = ndNwGraph += 1

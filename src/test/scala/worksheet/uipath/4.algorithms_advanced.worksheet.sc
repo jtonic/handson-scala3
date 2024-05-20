@@ -1,5 +1,5 @@
 import java.util.concurrent.TimeUnit
-import ro.jtonic.handson.scala3.util.Benchmark.{time, timed}
+import ro.jtonic.handson.scala3.util.benchmark.{time, timed}
 import scala.collection.mutable.ListBuffer
 import cats.instances.double
 import scala.collection.immutable.List
