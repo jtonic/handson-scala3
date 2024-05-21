@@ -17,3 +17,12 @@
 
 "key": "shift+alt+a",
 "command": "editor.action.blockComment",
+
+"key": "cmd+t",
+"command": "workbench.action.showAllSymbols"
+
+"key": "shift+cmd+o",
+"command": "workbench.action.gotoSymbol",
+
+"key": "shift+cmd+o",
+"command": "workbench.action.gotoSymbol",
