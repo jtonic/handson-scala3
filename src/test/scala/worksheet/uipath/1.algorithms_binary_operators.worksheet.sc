@@ -1,3 +1,5 @@
+import org.scalatest.matchers.should.Matchers._
+
 // --------------------------------------------------------------------------
 // binary operators algorithms
 // --------------------------------------------------------------------------
@@ -5,6 +7,7 @@
 extension (n: Int)
   def asBinaryString: String = n.toBinaryString.reverse.padTo(32, '0').reverse
   def isEven = (n & 1) == 0
+  def isOdd = (n & 1) == 1
   def isPowerOfTwo = n > 0 && (n & (n - 1)) == 0
 
 // having two numbers
@@ -44,3 +47,8 @@ b.isEven
 a.isPowerOfTwo
 b.isPowerOfTwo
 c.isPowerOfTwo
+
+
+3.isOdd shouldBe true
+4.isOdd shouldBe false
+4.isEven shouldBe true
