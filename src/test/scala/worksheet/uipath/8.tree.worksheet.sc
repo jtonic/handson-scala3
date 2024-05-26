@@ -5,10 +5,8 @@ object Model
 
   trait Tree[T](val value: T):
     var parent: Node[T] = null
-    def depth: Int = _depth
-    protected var _depth = 0
     override def toString() =
-      s"value: $value, depth: ${depth}, parent: [$parent]"
+      s"value: $value, parent: [$parent]"
 
 
   case class Leaf[T] private(_value: T) extends Tree[T](_value)
@@ -16,10 +14,18 @@ object Model
   case class Node[T] private (_value: T) extends Tree[T](_value):
     private val _children: ArrayBuffer[Tree[T]] = ArrayBuffer.empty
     def children: List[Tree[T]] = _children.toList
-    def addNode(node: Tree[T]): Unit =
-      if _children.isEmpty then _depth += 1
-      this._children.addOne(node)
-      node.parent = this
+    def addChild(child: Tree[T]): Unit =
+      child.parent = this
+      _children += child
+
+    // def computeDepth(n: Tree[T]): Unit =
+    //   var d = 0
+    //   var current = n
+    //   while current.parent != null do
+    //     d += 1
+    //     current = current.parent
+    //   n._depth = d
+
     override def toString(): String =
       s"""
       ${super.toString()}, children: ${this._children.size}
@@ -31,8 +37,7 @@ object Model
   object Node:
     def apply[T](value: T, children: Tree[T]*): Node[T] =
       val n: Node[T] = new Node(value)
-      n._children.addAll(children.toList)
-      children.foreach(_.parent = n)
+      for c <- children do n.addChild(c)
       n
 
 object Algebra
@@ -71,24 +76,10 @@ object Data
     ),
   )
 
-val n1 = Node(1)
-n1.addNode(Leaf(2))
-n1.addNode(Leaf(3))
-n1.addNode(Leaf(4))
-n1
-
-val n2 = Node(10)
-n2.addNode(n1)
-n2.addNode(Leaf(11))
-
-n1
-n2
-n1.depth shouldBe 1
 
 val leaf2 = tree.children(0).asInstanceOf[Node[Int]].children(0)
 leaf2.value
 leaf2.parent.value shouldBe 3
-leaf2.depth shouldBe 2
 
 val leaf35 = tree.children(2).asInstanceOf[Node[Int]].children(0).asInstanceOf[Node[Int]].children(0)
 leaf35 shouldBe Leaf(35)
