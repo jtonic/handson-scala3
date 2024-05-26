@@ -1,8 +1,8 @@
-import org.checkerframework.checker.units.qual.s
 import java.util.Calendar
 import scala.annotation.retains
 import scala.collection.mutable.ArrayBuffer
 import org.scalatest.matchers.should.Matchers.*
+import scala.util.control.Breaks.*
 
 
 case class CalendarEntry(description: String, startTime: Int)
@@ -14,7 +14,7 @@ object CalendarEntry:
     then c1
     else c2
 
-val calendar1 = Array(
+val cal11 = Array(
   CalendarEntry("c1_8", 8),
   CalendarEntry("c1_9", 9),
   CalendarEntry("c1_12", 12),
@@ -24,41 +24,70 @@ val calendar1 = Array(
   CalendarEntry("C1_20", 20),
 )
 
-val calendar2 = Array(
+def merge(c1: Array[CalendarEntry], c2: Array[CalendarEntry]): Array[CalendarEntry] =
+
+  val s1 = c1.size
+  val s2 = c2.size
+  val s = s1 + s2
+  val r: Array[CalendarEntry] = Array.fill(s)(CalendarEntry.empty)
+  val i = 0
+  val i1 = 0
+  val i2 = 0
+
+  breakable:
+    while
+      true
+    do
+      if i2 == s2
+      then
+        Array.copy(c1, i1, r, i, c1.size - i1)
+        break()
+      if i1 == s1
+      then
+        Array.copy(c2, i2, r, i, c2.size - i2)
+        break()
+  r
+
+
+val cal21 = Array.empty[CalendarEntry]
+
+val cal12 = Array.empty[CalendarEntry]
+val cal22 = Array(
   CalendarEntry("c2_10", 10),
   CalendarEntry("c2_11", 11),
   CalendarEntry("c2_17", 17),
-)
+  )
 
-calendar1.toList
-calendar2.toList
+merge(cal11, cal21) should be (cal11)
+merge(cal21, cal22) should be (cal22)
 
-def merge(c1: Array[CalendarEntry], c2: Array[CalendarEntry]): List[CalendarEntry] =
-  val size = c1.size + c2.size
-  val r: ArrayBuffer[CalendarEntry] = ArrayBuffer.fill(size)(CalendarEntry.empty)
 
-  var i = 0
-  var p1 = 0
-  var p2 = 0
+// def merge(c1: Array[CalendarEntry], c2: Array[CalendarEntry]): List[CalendarEntry] =
+//   val size = c1.size + c2.size
+//   val r: ArrayBuffer[CalendarEntry] = ArrayBuffer.fill(size)(CalendarEntry.empty)
 
-  while
-    p1 < c1.size && p2 < c2.size
-  do
-    val e1 = c1(p1)
-    val e2 = c2(p2)
-    println(s"$e1 : $e2")
-    if e1.startTime < e2.startTime
-    then
-      r(i) = e1
-      p1 += 1
-    else
-      r(i) = e2
-      p2 += 1
-    i += 1
+//   var i = 0
+//   var p1 = 0
+//   var p2 = 0
 
-  r.toList
+//   while
+//     p1 < c1.size && p2 < c2.size
+//   do
+//     val e1 = c1(p1)
+//     val e2 = c2(p2)
+//     println(s"$e1 : $e2")
+//     if e1.startTime < e2.startTime
+//     then
+//       r(i) = e1
+//       p1 += 1
+//     else
+//       r(i) = e2
+//       p2 += 1
+//     i += 1
 
-val mergedCalendars = merge(calendar1, calendar2)
+//   r.toList
+
+/* val mergedCalendars = merge(cal1, cal2)
 
 mergedCalendars
 
@@ -76,3 +105,4 @@ mergedCalendars should equal (
     CalendarEntry("C1_20", 20),
   )
 )
+ */
