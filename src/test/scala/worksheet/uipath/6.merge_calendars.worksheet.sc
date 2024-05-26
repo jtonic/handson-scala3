@@ -97,8 +97,23 @@ import Data.*, Model.*, Algebra.*
 merge(cal1e, cal2e) should be (Array.empty[CalendarEntry])
 merge(cal11, cal2e) should be (cal11)
 merge(cal1e, cal21) should be (cal21)
+merge(cal11, cal21) should be (
+  Array(
+    CalendarEntry("c1_8", 8),
+    CalendarEntry("c1_9", 9),
+    CalendarEntry("c2_10", 10),
+    CalendarEntry("c2_11", 11),
+    CalendarEntry("c1_12", 12),
+    CalendarEntry("C1_15", 15),
+    CalendarEntry("c2_17", 17),
+    CalendarEntry("C1_18", 18),
+    CalendarEntry("C1_19", 19),
+    CalendarEntry("C1_20", 20),
+  )
+)
+
 merge(cal12, cal22) should be (
-  List(
+  Array(
     CalendarEntry("c2_7", 7),
     CalendarEntry("c1_8", 8),
     CalendarEntry("c1_9", 9),
