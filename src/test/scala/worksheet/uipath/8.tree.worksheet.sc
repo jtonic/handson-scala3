@@ -77,6 +77,12 @@ object Algebra
         l -= 1
       target
 
+object Conversions
+  given treeToNodeConversion[T]: Conversion[Tree[T], Node[T]] with
+    def apply(x: Tree[T]): Node[T] = x.asInstanceOf[Node[T]]
+
+
+
 object Data
   import Model.*, Algebra.*
 
@@ -103,28 +109,16 @@ object Data
     ),
   )
 
-// kkmk
-
-val leaf2 = tree.children(0).asInstanceOf[Node[Int]].children(0)
-leaf2.value
-leaf2.parent.value shouldBe 3
-leaf2.parent.parent.value shouldBe 10
-leaf2.depth() shouldBe 2
-leaf2.moveUp(2).value shouldBe 10
-
 val leaf35 = tree.children(2).asInstanceOf[Node[Int]].children(0).asInstanceOf[Node[Int]].children(0)
-leaf35.value shouldBe 35
-leaf35.parent.value shouldBe 20
+val leaf18 = tree.children(2).children(0).children(1).children(0)
+val leaf2 = tree.children(0).children(0)
+val leaf5 = tree.children(1).children(0)
+val leaf9 = tree.children(1).children(2)
 
-val leaf18 = tree.children(2).asInstanceOf[Node[Int]].children(0).asInstanceOf[Node[Int]].children(1).asInstanceOf[Node[Int]].children(0)
-
-leaf18.value shouldBe 18
-
-val leaf5 = tree.children(1).asInstanceOf[Node[Int]].children(0)
-leaf5.value shouldBe 5
-val leaf9 = tree.children(1).asInstanceOf[Node[Int]].children(2)
-leaf9.value shouldBe 9
 
 getCommonParent(leaf2, leaf35).value shouldBe 10
 getCommonParent(leaf18, leaf35).value shouldBe 20
 getCommonParent(leaf5, leaf9).value shouldBe 7
+
+leaf2.depth() shouldBe 2
+leaf2.moveUp(2).value shouldBe 10
