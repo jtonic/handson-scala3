@@ -57,9 +57,37 @@ object Algebra
           bn = bn.parent
     result.get
 
+  def traverse[T](n: Tree[T]): Array[Tree[T]] =
+
+    var current: Tree[T] = n
+    val visitedNodes = ArrayBuffer.empty[Tree[T]]
+
+    def visited(node: Tree[T], visitedNs: ArrayBuffer[Tree[T]]) = visitedNs.contains(node)
+    def firstNotVisitedChild(node: Tree[T], visitedNs: ArrayBuffer[Tree[T]]): Tree[T] =
+      node.children.find(n => !visitedNs.contains(n)).getOrElse(null)
+
+    breakable:
+      while true do
+        if current.isInstanceOf[Leaf[T]] then
+          visitedNodes += current
+          current = current.parent // loop here
+        else
+          val crtNode: Node[T] = current.asInstanceOf[Node[T]]
+          val visitedNode = visited(crtNode, visitedNodes)
+          if !visitedNode then
+            visitedNodes += crtNode
+            current = crtNode.children(0) // loop here
+          else
+            val fnvChild: Tree[T] = firstNotVisitedChild(crtNode, visitedNodes)
+            if fnvChild != null then
+              current = fnvChild // loop here
+            else if crtNode.parent != null then
+              current = crtNode.parent // loop here
+            else
+              break()
+    visitedNodes.toArray
+
   extension [T](self: Tree[T])
-    def traverse() =
-      ???
 
     def depth(): Int =
       var depth: Int = 0
@@ -81,8 +109,6 @@ object Conversions
   given treeToNodeConversion[T]: Conversion[Tree[T], Node[T]] with
     def apply(x: Tree[T]): Node[T] = x.asInstanceOf[Node[T]]
 
-
-
 object Data
   import Model.*, Algebra.*
 
@@ -99,8 +125,8 @@ object Data
       Node(20,
         Leaf(35),
         Node(33,
-          Node(18),
-          Node(20)
+          Leaf(18),
+          Leaf(21)
         )
       )
     ),
@@ -114,6 +140,7 @@ val leaf18 = tree.children(2).children(0).children(1).children(0)
 val leaf2 = tree.children(0).children(0)
 val leaf5 = tree.children(1).children(0)
 val leaf9 = tree.children(1).children(2)
+val leaf21 = tree.children(2).children(0).children(1).children(1).value
 
 
 getCommonParent(leaf2, leaf35).value shouldBe 10
@@ -122,3 +149,7 @@ getCommonParent(leaf5, leaf9).value shouldBe 7
 
 leaf2.depth() shouldBe 2
 leaf2.moveUp(2).value shouldBe 10
+
+val traversed: Array[Tree[Int]] = traverse(tree)
+traversed.size shouldBe 15
+traversed.map(_.value).toList shouldBe List(10, 3, 2, 7, 5, 8, 9, 13, 20, 35, 33, 18, 21, 100, 17)
