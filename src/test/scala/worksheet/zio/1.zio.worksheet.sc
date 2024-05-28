@@ -5,24 +5,27 @@ import zio.Runtime
 
 // kkmk
 
+object Business
 
-val app =
-  for
-    _ <- ZIO.log("Starting ZIO app")
-    a <- ZIO.succeed("a")
-    _ <- ZIO.log("Ending ZIO app")
-  yield a
+  val app =
+    for
+      _ <- ZIO.log("Starting ZIO app")
+      a <- ZIO.succeed("a")
+      _ <- ZIO.log("Ending ZIO app")
+    yield a
 
-val addSimpleLogger: ZLayer[Any, Nothing, Unit] =
-  Runtime.addLogger((_, _, _, message: () => Any, _, _, _, _) => println(message()))
+object Environment
 
-val layer: ZLayer[Any, Nothing, Unit] =
-  Runtime.removeDefaultLoggers ++ addSimpleLogger
+  val addSimpleLogger: ZLayer[Any, Nothing, Unit] =
+    Runtime.addLogger((_, _, _, message: () => Any, _, _, _, _) => println(message()))
 
-val runtime: Runtime[Any] =
-  Unsafe.unsafe { implicit unsafe =>
-    Runtime.unsafe.fromLayer(layer)
-  }
+  val layer: ZLayer[Any, Nothing, Unit] =
+    Runtime.removeDefaultLoggers ++ addSimpleLogger
+
+  val runtime: Runtime[Any] =
+    Unsafe.unsafe { implicit unsafe =>
+      Runtime.unsafe.fromLayer(layer)
+    }
 
 def zioApp(): String =
   val appResult = Unsafe.unsafe { implicit unsafe =>
