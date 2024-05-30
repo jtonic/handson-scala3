@@ -17,8 +17,8 @@ package function:
 
   extension [A, B](f: A => B)
     def <|(a: A): B = f(a)
-    def >>[C](g: B => C): A => C = f.andThen(g)
-    def <<[C](g: C => A): C => B = g.andThen(f)
+    def >>[C](g: B => C): A => C = f andThen g
+    def <<[C](g: C => A): C => B = g andThen f
 
 extension [T] (t: Try[T])
   def toRight[L](tr: Throwable => L): Either[L, T] = t match
