@@ -1,4 +1,6 @@
 import cats.instances.arraySeq
+import scala.collection.immutable.LinearSeq
+import scala.util.Try.*
 
 // ------------------------------------------
 // Lazy List
@@ -58,7 +60,8 @@ val numbersArray = Array(1, 2, 3, 4, 5)
 numbersArray.update(2, 30)
 numbersArray
   .filter(_ % 2 == 0)
-  .map(_ * 10).toList
+  .map(_ * 10)
+  .toList
 numbersArray.toList
 val numbersArraySeq: mutable.ArraySeq[Int] = numbersArray
 

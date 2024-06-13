@@ -57,12 +57,15 @@ object Algebra
           bn = bn.parent
     result.get
 
+  //fixme: try without breakable but with loop and recursion
+  // and probably to simplify finding firstNotVisitedChild.
   def traverse[T](n: Tree[T]): Array[Tree[T]] =
 
     var current: Tree[T] = n
     val visitedNodes = ArrayBuffer.empty[Tree[T]]
 
     def visited(node: Tree[T], visitedNs: ArrayBuffer[Tree[T]]) = visitedNs.contains(node)
+
     def firstNotVisitedChild(node: Tree[T], visitedNs: ArrayBuffer[Tree[T]]): Tree[T] =
       node.children.find(n => !visitedNs.contains(n)).getOrElse(null)
 
