@@ -2,8 +2,6 @@ import $ivy.`dev.zio::zio:2.1.1`
 
 import zio._
 
-// kkmk
-
 object Business
 
 val app =
@@ -31,7 +29,7 @@ val runtime: Runtime[Any] =
   }
 
 def zioApp(): String =
-  val appResult = Unsafe.unsafe{ implicit unsafe =>
+  val appResult = Unsafe.unsafe { implicit unsafe =>
     runtime.unsafe
       .run(app)
       .getOrThrowFiberFailure()
