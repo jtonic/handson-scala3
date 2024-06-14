@@ -3,6 +3,8 @@
 .metals/
 .scala-build/
 .bloop/
+*.scala.semanticdb
+
 
 ## Gradle
 .gradle/*
