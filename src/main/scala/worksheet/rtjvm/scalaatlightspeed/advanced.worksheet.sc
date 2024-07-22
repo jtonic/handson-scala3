@@ -21,6 +21,9 @@ val result = opt1 match
   case None => ""
 result
 
+val result2 = opt1.flatMap(val1 => opt2.map(val2 => val1 + val2))
+result2
+
 // ------------------------------------------------------------
 // 2. Try
 // ------------------------------------------------------------
