@@ -2,7 +2,7 @@
 // 1. piping through function composition
 // 2. currying
 // ==========================================
-  import ro.jtonic.handson.scala3.util.{<<, >>, |>, <|}
+import ro.jtonic.handson.scala3.util.function.{<<, >>, |>, <|}
 
 // 1.
 
@@ -14,8 +14,7 @@ def bee(x: Int) = x + 3
 
 foo >> boo << bee <| 1
 
-1
-  |> foo
+1 |> foo
   |> boo
   |> bee
   |> (_ + 1)
