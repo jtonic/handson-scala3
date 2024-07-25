@@ -1,10 +1,12 @@
 package ro.jtonic.handson.scala3
 
-object App {
+import scala.io.StdIn.readLine
 
-  def foo(x: Array[String]): String = x.foldLeft("")((a, b) => a + b)
+object App:
 
   def main(args: Array[String]): Unit =
-    println("Hello World!")
-    println("concat arguments = " + foo(args))
-}
+    println("How are you?")
+    println("What's your name?")
+    readLine() match
+      case null => println("No name provided!")
+      case name => println(s"Hello, $name!")
