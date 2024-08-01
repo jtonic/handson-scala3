@@ -12,7 +12,6 @@ val lazyResult = numbersView.map(_ + 1).map(_ * 10)
 lazyResult
 lazyResult.toVector
 
-
 // ------------------------------------------------------------------------
 // iterator
 // ------------------------------------------------------------------------
@@ -31,11 +30,9 @@ numbersIt3.next
 numbersIt3.next
 numbersIt3.next
 
-
 // iterate and unfold methods
 List.iterate(10, 10)(_ + 1)
 List.unfold(10)(s => if s < 20 then Some(s, s + 1) else None)
-
 
 // ------------------------------------------------------------------------
 // conversion from scala to java and vice versa
@@ -48,3 +45,16 @@ val scalaList = javaList.asScala
 
 initialJavaList eq scalaList
 initialJavaList == scalaList
+
+// create a list of names and filter the ones that start with 'A' and count them
+val names = List("Alice", "Bob", "Charlie", "David", "Eve")
+names.filter(_.startsWith("A")).size
+
+// create a case class Person with first  name, last name and age
+// create a extension method to get the full named of the person
+case class Person(firstName: String, lastName: String, age: Int)
+
+extension (p: Person) def fullName = s"${p.firstName} ${p.lastName}"
+
+val tony = Person("Tony", "Stark", 54)
+tony.fullName

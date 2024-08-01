@@ -39,7 +39,6 @@ val dolphin = Dolphin()
 dolphin.eat(Fish())
 // dolphin.eat(Grass()) // error: type mismatch
 
-
 class Outer:
   class Inner:
     def f(i: Inner) = println("f")
@@ -56,7 +55,6 @@ val i2 = o2.Inner()
 i1.g(i2)
 
 // new Outer#Inner // is not an path-dependent type
-
 
 // ------------------------------------------------------------------------
 // 4. Refinement Types
