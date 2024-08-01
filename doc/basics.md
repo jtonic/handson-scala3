@@ -7,6 +7,7 @@
 - [ ] dependencies (the toolkit)
 - [x] more files for the same logic
 - [ ] package the entire solution as natives
+  - [ ] all packaging types supported
 
 ## Working with File Systems
 

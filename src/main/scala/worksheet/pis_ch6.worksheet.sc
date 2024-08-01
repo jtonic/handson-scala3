@@ -32,5 +32,3 @@ toThirds
 
 half + toThirds
 toThirds > half
-
-2 + half
