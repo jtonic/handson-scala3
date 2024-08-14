@@ -8,7 +8,6 @@ val strings = List("a", "aa", "aaa", "aaaa")
 
 strings groupBy (_.length)
 
-
 numbers foreach println
 
 // require(numbers.length >= 20, "The list must have more than 20 elements")
@@ -19,7 +18,6 @@ println("Hello world!")
 
 val a: String = null
 a
-
 
 // inefficient increment of List's elements
 
