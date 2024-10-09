@@ -1,4 +1,4 @@
-//> using dep "dev.zio::zio:2.1.1"
+//> using dep "dev.zio::zio:2.1.9"
 
 import zio._
 
