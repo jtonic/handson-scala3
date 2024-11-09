@@ -14,8 +14,7 @@ package DurationUtils:
   extension (t: thread.type)
     def `for`(d: Duration): Unit = Thread.sleep(d.toMillis)
 
-@main def main(): Unit = {
+@main def main() =
   import DurationUtils.*
   sleep current thread `for` 1.second
   println("Finish!!!")
-}
