@@ -1,5 +1,5 @@
 //> using jvm 21
-//> using scala 3.4.2
+//> using scala 3.6.2
 //> using files ./file1.scala, ./file2.scala
 
 @main def main =

@@ -7,7 +7,7 @@ import scala.concurrent.duration.*
 object DurationUtils: // <- this must be package but it doesn't work in worksheet
   sealed trait DSLKeyWord
   object sleeping extends DSLKeyWord:
-    def current(th: thread.type): thread.type = thread
+    infix def current(th: thread.type): thread.type = thread
   object sleep extends DSLKeyWord:
     def current(th: thread.type): thread.type = thread
   object thread extends DSLKeyWord
