@@ -9,11 +9,11 @@ object DurationUtils: // <- this must be package but it doesn't work in workshee
   object sleeping extends DSLKeyWord:
     infix def current(th: thread.type): thread.type = thread
   object sleep extends DSLKeyWord:
-    def current(th: thread.type): thread.type = thread
+    infix def current(th: thread.type): thread.type = thread
   object thread extends DSLKeyWord
   extension (t: thread.type)
     def `for`(d: Duration): Unit = Thread.sleep(d.toMillis)
-    def during(d: Duration): Unit = Thread.sleep(d.toMillis)
+    infix def during(d: Duration): Unit = Thread.sleep(d.toMillis)
 
 import DurationUtils.*
 
